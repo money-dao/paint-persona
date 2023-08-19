@@ -1,0 +1,1 @@
+module.exports = (c, ...items) => `<div class="col ${c}">${items.join('')}</div>`

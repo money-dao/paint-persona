@@ -1,0 +1,36 @@
+body {
+  background-color: #8c84ff;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
+
+.card-sm {
+  height: 180px;
+}
+
+.card-lg {
+  height: 270px;
+}
+
+.card-sm,
+.card-lg {
+  overflow: hidden;
+  position: relative;
+  width: 330px;
+}
+
+.card-sm>.card-content,
+.card-lg>.card-content {
+  padding: 0 12px;
+}
+
+.post {
+  position: relative;
+}
+
+.post>* {
+  position: absolute;
+}
