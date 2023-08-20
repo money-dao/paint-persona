@@ -29,10 +29,12 @@ module.exports = () => {
   const colorBalls = () => {
     const colors = [
       '#fff', //default
+      '#141414', //space
       '#fff87f', //yellow
       '#77f5ff', //cyan
       '#9a94ff', //purple
       '#fece95', //skin light
+      '#876451', //skin dark
       '#feab6f', //orange
       '#fd91a7', //red
       '#7fff9a', //green

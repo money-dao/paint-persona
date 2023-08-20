@@ -1,3 +1,16 @@
+:root {
+  --default: "#fff";
+  --yellow: "#fff87f";
+  --cyan: "#77f5ff";
+  --purple: "#9a94ff";
+  --skin-light: "#fece95";
+  --orange: "#feab6f";
+  --red: "#fd91a7";
+  --green: "#7fff9a";
+  --purpleblue: "#6288fe";
+  --skin-dark: "#876451";
+}
+
 body {
   background-color: #8c84ff;
 }

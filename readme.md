@@ -6,7 +6,6 @@
 * http://localhost:4200
 
 ## Todos:
-* swag link
 * firebase integration
   * server - post
 * post - image, like, subscribe
