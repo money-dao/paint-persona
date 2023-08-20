@@ -7,20 +7,22 @@ const swagText = (id) => {
 
   const textId = event.el(el => {
     el.addEventListener('keyup', e => {
-      editSwag(swag => swag.value = el.value)
+      swag.edit(swag => swag.value = el.value)
       event.dispatch`editpost`(`.post`)
     })
   })
+
   const fontId = event.el((el, fontId) => {
     el.addEventListener('change', () => {
       let val = el.value
-      editSwag(swag => swag.font = parseInt(val))
-      const label = swagEl().querySelector(`label[for=${fontId}]`)
+      swag.edit(swag => swag.font = parseInt(val))
+      const label = swag.el().querySelector(`label[for=${fontId}]`)
       label.innerText = `Font: ${val}`
       event.dispatch`editpost`(`.post`)
     })
   })
-  const textTabId = event.el(tabfn)
+
+  const textTabId = event.el(swag.tabfn)
 
   return {
     textId,

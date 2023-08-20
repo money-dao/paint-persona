@@ -24,8 +24,8 @@ const swag_text = () => {
 
   //ids
 
-  const { textTabId, textId, fontId } = swagText()
-  const { posTabId, posxId, posyId, posrId } = swagPosition()
+  const { textTabId, textId, fontId } = swagText(id)
+  const { posTabId, posxId, posyId, posrId } = swagPosition(id)
   
   const removeId = event.el(el => {
     el.addEventListener('click', () => {
