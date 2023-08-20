@@ -19,7 +19,7 @@ const hub = () => {
   })
   
   const mbCards = () => accounts.map(nft => `
-      <tr class="row" id="${mbCardRowId(nft)}">
+      <tr class="row hoverable" id="${mbCardRowId(nft)}">
         <td class="col s3 m2"><img class="col s12" src="${nft.image}"></td>
         <td class="col s5 m6">${nft.name}</td>
         <td class="col s4">0 sol</td>

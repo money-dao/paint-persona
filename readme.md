@@ -6,9 +6,12 @@
 * http://localhost:4200
 
 ## Todos:
-* background color for post
+* text color
 * swag link
 * firebase integration
   * server - post
 * post - image, like, subscribe
 * browse page
+
+### Completed Todos:
+* background color for post

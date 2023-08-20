@@ -69,11 +69,11 @@ const swag_nft = () => {
       </section>
       <section class="${posTabId} hide">
         <p class="range-field">
-          <input type="range" id="${posxId}" value="${swag.pos.x}" min="0" max="330" />
+          <input type="range" id="${posxId}" value="${swag.pos.x}" min="-1" max="330" />
           <label for="${posxId}">x: ${swag.pos.x}</label>
         </p>
         <p class="range-field">
-          <input type="range" id="${posyId}" value="${swag.pos.y}" min="0" max="270" />
+          <input type="range" id="${posyId}" value="${swag.pos.y}" min="-1" max="270" />
           <label for="${posyId}">y: ${swag.pos.y}</label>
         </p>
         <p class="range-field">

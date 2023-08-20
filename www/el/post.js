@@ -23,6 +23,7 @@ const post = () => {
       el.innerHTML = ''
       if(post.swag)
         post.swag.forEach(swag => event.append(el, renderSwag(swag)))
+      el.parentElement.parentElement.style.background = post.color
     })
   })
     

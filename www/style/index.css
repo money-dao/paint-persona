@@ -38,3 +38,8 @@ body {
 .post>* {
   position: absolute;
 }
+
+.color-ball {
+  height: 32px;
+  width: 32px;
+}

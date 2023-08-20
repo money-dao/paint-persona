@@ -10,11 +10,12 @@ module.exports = () => {
   
   let post = {
     size: 180,
+    color: '#fff',
     swag: []
   }
   data`edit-post`(post)
   
-  const checkboxId = event.el(el => {
+  const cardsizeId = event.el(el => {
     el.addEventListener('change', () => {
       post = data`edit-post`()
       post.size = el.checked ? 180 : 270
@@ -24,6 +25,31 @@ module.exports = () => {
       card.classList.add(!el.checked ? 'card-sm' : 'card-lg')
     })
   })
+
+  const colorBalls = () => {
+    const colors = [
+      '#fff', //default
+      '#fff87f', //yellow
+      '#77f5ff', //cyan
+      '#9a94ff', //purple
+      '#fece95', //skin light
+      '#feab6f', //orange
+      '#fd91a7', //red
+      '#7fff9a', //green
+      '#6288fe' //purpleblue
+    ]
+
+    const setColor = color => event.click(el => {
+      const post = data`edit-post`()
+      post.color = color
+      data`edit-post`(post)
+      event.dispatch`editpost`('.post')
+    })
+
+    return colors.map(color => `
+        <button id="${setColor(color)}" class="circle color-ball btn" style="background: ${color};"></button>
+      `).join('')
+  }
  
   return el.nav(
     el.route(  
@@ -36,14 +62,17 @@ module.exports = () => {
         ),
         el.col('s12 m9',
           `<h1 class="white-text">New Post</h1>`,
-          `<div class="switch">
-            <label class="white-text">
-              Small - 180px
-              <input type="checkbox" id="${checkboxId}">
-              <span class="lever"></span>
-              Large - 270px
-            </label>
-          </div>`,
+          el.row(
+            `<div class="switch">
+              <label class="white-text">
+                Small - 180px
+                <input type="checkbox" id="${cardsizeId}">
+                <span class="lever"></span>
+                Large - 270px
+              </label>
+            </div>`
+          ),
+          el.row(colorBalls()),
           `<div class="flex-center">`,
             el.post(),          
           `</div>`,
