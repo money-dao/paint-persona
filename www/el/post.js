@@ -6,7 +6,7 @@ const renderSwag = swag => {
   let style, classList
   switch(swag.type){
     case 'text':
-      style = `left: ${swag.pos.x}px;top: ${swag.pos.y}px;font-size: ${swag.font}px;transform: rotate(${swag.pos.r}deg);`
+      style = `color: ${swag.color};left: ${swag.pos.x}px;top: ${swag.pos.y}px;font-size: ${swag.font}px;transform: rotate(${swag.pos.r}deg);`
       return `<p style="${style}" class="flow-text">${swag.value}</p>`
     case 'nft':
       style = `left: ${swag.pos.x}px;top: ${swag.pos.y}px;width: ${swag.size}px;transform: rotate(${swag.pos.r}deg);`

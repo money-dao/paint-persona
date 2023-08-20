@@ -22,11 +22,21 @@ const swagText = (id) => {
     })
   })
 
+  const colorId = event.el((el, colorId) => {
+    el.addEventListener('change', () => {
+      let val = el.value
+      swag.edit(swag => swag.color = val)
+      event.dispatch`editpost`(`.post`)
+      el.style.background = val
+    })
+  })
+
   const textTabId = event.el(swag.tabfn)
 
   return {
     textId,
     fontId,
+    colorId,
     textTabId
   }
 }

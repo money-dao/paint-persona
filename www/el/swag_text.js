@@ -13,6 +13,7 @@ const swag_text = () => {
     type: 'text',
     value: 'Enter text...',
     font: 12,
+    color: '#000',
     pos: {
       x: 5,
       y: 5,
@@ -24,7 +25,7 @@ const swag_text = () => {
 
   //ids
 
-  const { textTabId, textId, fontId } = swagText(id)
+  const { textTabId, textId, fontId, colorId } = swagText(id)
   const { posTabId, posxId, posyId, posrId } = swagPosition(id)
   
   const removeId = event.el(el => {
@@ -57,6 +58,11 @@ const swag_text = () => {
             <input type="range" id="${fontId}" value="${swag.font}" min="8" max="54" />
             <label for="${fontId}">Font: ${swag.font}</label>
           </p>
+        </div>
+        <div>
+          <div class="input-field">
+            <input id="${colorId}" type="color" class="btn" style="babckground:${swag.color};">
+          </div>
         </div>
       </section>
       <section class="${posTabId} hide">
