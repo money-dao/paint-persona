@@ -1,10 +1,9 @@
 const data = require('../service/data.js')
 const event = require('../service/event.js')
 const card = require('./card.js')
-const swagText = require('../prefab/swag_text.js')
 const swagPosition = require('../prefab/swag_position.js')
 
-const swag_text = () => {
+const swag_nft = () => {
   //init
   const id = event.guid()
   const post = data`edit-post`()
@@ -23,26 +22,10 @@ const swag_text = () => {
   event.dispatch`editpost`(`.post`)
 
   //ids
-
-  const { textTabId, textId, fontId } = swagText()
   const { posTabId, posxId, posyId, posrId } = swagPosition()
-  
-  const removeId = event.el(el => {
-    el.addEventListener('click', () => {
-      const post = data`edit-post`()
-      post.swag = post.swag.filter(swag => swag.id !== id)
-      data`edit-post`(post)
-      event.dispatch`editpost`(`#swag-nav`, swag)
-    })
-  })
 
-  const swagEl = () => document.querySelector(`.${id}`)  
-  event.fn(() => {
-    const tabs = swagEl().querySelector('.tabs')
-    M.Tabs.init(tabs, {})
-  })
   
-  return card(`swag-text ${id}`,
+  return card(`swag-nft ${id}`,
     `
       <h6>${post.swag.length}. Text</h6>
       <section class="${textTabId}">
@@ -83,4 +66,4 @@ const swag_text = () => {
     `
   )
 }
-module.exports = swag_text
+module.exports = swag_nft

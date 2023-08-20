@@ -1,16 +1,19 @@
 const el = require('../el/_el.js')
 const event = require('../service/event.js')
 const data = require('../service/data.js')
+const profileNotFound = require('./profilenotfound.js')
 
 module.exports = () => {
 
+  const profile = data`profile`()
+  if(!profile) return profileNotFound()
+  
   let post = {
     size: 180,
     swag: []
   }
   data`edit-post`(post)
-
-  const profile = data`profile`()
+  
   const checkboxId = event.el(el => {
     el.addEventListener('change', () => {
       post = data`edit-post`()
@@ -22,8 +25,7 @@ module.exports = () => {
     })
   })
  
-  return profile 
-  ? el.route(  
+  return el.route(  
     el.swag_nav(),
     el.row(
       el.col('s12 m3',
@@ -51,5 +53,4 @@ module.exports = () => {
       )
     )
   )
-  : '<div class="container"><h1>Profile not found</h1><a href="#">Home</a></div>'
 }
