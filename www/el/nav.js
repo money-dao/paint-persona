@@ -26,6 +26,7 @@ const nav = route => {
   
   const connectId = event.el(el => {
     el.addEventListener('click', async () => {
+      el.innerText = 'Connecting...'
       await w3.connect()
       refresh()
     })

@@ -34,7 +34,7 @@ const swagNav = () => {
   return `
     <ul id="swag-nav" class="sidenav">
       <li><a class="waves-effect" id="${textId}">Text</a></li>
-      <li><a class="waves-effect" id="${nftId}">NFT Image</a></li>
+      <li><a class="waves-effect" id="${nftId}">NFT</a></li>
       <li><a class="waves-effect">Link</a></li>
     </ul>
   `

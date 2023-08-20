@@ -5,6 +5,15 @@ const swag = (id) => {
 
   const swagEl = () => document.querySelector(`.${id}`)
 
+  const getSwag = () => {
+    const post = data`edit-post`()
+    return post.swag.find(swag => {
+      if(swag.id === id){
+        return swag
+      }
+    })
+  }
+
   const editSwag = fn => {
     const post = data`edit-post`()
     post.swag.find(swag => {
@@ -30,6 +39,7 @@ const swag = (id) => {
   return {
     el: swagEl,
     edit: editSwag,
+    get: getSwag,
     tabfn
   }
 }

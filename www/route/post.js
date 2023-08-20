@@ -31,7 +31,7 @@ module.exports = () => {
       el.row(
         el.col('s12 m3',
           el.mb_card(profile.img, profile.title, false), 
-          `<a class="waves-effect waves-light btn col s12" href="#profile">Post (10)</a>`,
+          `<a class="waves-effect waves-light btn col s12" href="#profile">Post 0.03 sol</a>`,
           `<a class="waves-effect waves-light btn col s12" href="#profile">Cancel</a>`,
         ),
         el.col('s12 m9',

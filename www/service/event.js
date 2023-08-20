@@ -14,6 +14,8 @@ const el = fn => {
   return id
 }
 
+const click = fn => el(el => el.addEventListener('click', () => fn(el)))
+
 const fn = fn => {
   if(!router.loaded()) router.pushfn(fn)
   else setTimeout(() => fn(), 0)
@@ -39,4 +41,4 @@ const prepend = (el, text) => {
   while(div.lastChild) el.prepend(div.lastChild)
 }
 
-module.exports = {guid, el, fn, dispatch, append, prepend}
+module.exports = {guid, el, fn, dispatch, append, prepend, click}

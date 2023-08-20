@@ -9,17 +9,17 @@ const hub = () => {
   const nfts = data`nfts`()
   const accounts = [...nfts.boys, ...nfts.girls]
 
-  const click = fn => event.el(el => el.addEventListener('click', () => fn(el)))
+  const mbCardRowId = nft => event.click(() => {
+    data`profile`({
+      img: nft.image,
+      title: nft.name,
+      nft
+    })
+    location.hash = '#profile'
+  })
   
   const mbCards = () => accounts.map(nft => `
-      <tr class="row" id="${click(() => {
-        data`profile`({
-          img: nft.image,
-          title: nft.name,
-          nft
-        })
-        location.hash = '#profile'
-      })}">
+      <tr class="row" id="${mbCardRowId(nft)}">
         <td class="col s3 m2"><img class="col s12" src="${nft.image}"></td>
         <td class="col s5 m6">${nft.name}</td>
         <td class="col s4">0 sol</td>
@@ -34,7 +34,7 @@ const hub = () => {
           `<table class="highlight">
             <thead>
               <tr class="row">
-                  <th class="col s3 m2"></th>
+                  <th class="col s3 m2">NFT</th>
                   <th class="col s5 m6">Name</th>
                   <th class="col s4">Revenue</th>
               </tr>
