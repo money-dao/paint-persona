@@ -1,5 +1,6 @@
 const event = require('../service/event.js')
 const swagText = require('./swag_text.js')
+const swagNFT = require('./swag_nft.js')
 
 const swagNav = () => {
   event.fn(() => {
@@ -22,11 +23,18 @@ const swagNav = () => {
       event.prepend(div, swagText())
     })
   })
+
+  const nftId = event.el((el, id) => {
+    el.addEventListener('click', () => {
+      const div = document.getElementById('swag')
+      event.prepend(div, swagNFT())
+    })
+  })
   
   return `
     <ul id="swag-nav" class="sidenav">
       <li><a class="waves-effect" id="${textId}">Text</a></li>
-      <li><a class="waves-effect">NFT Image</a></li>
+      <li><a class="waves-effect" id="${nftId}">NFT Image</a></li>
       <li><a class="waves-effect">Link</a></li>
     </ul>
   `

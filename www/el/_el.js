@@ -11,9 +11,11 @@ const route = require('./route.js')
 const swag_nav = require('./swag_nav.js')
 const swag_text = require('./swag_text.js')
 const post = require('./post.js')
+const nav = require('./nav.js')
 
 module.exports = {
   card, carousel, footer, mb_card, row, search,
   collapible, collapse_li, route, col,
-  swag_nav, swag_text, post
+  swag_nav, swag_text, post,
+  nav
 }

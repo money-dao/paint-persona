@@ -25,23 +25,11 @@ const swag_nft = () => {
   const { posTabId, posxId, posyId, posrId } = swagPosition()
 
   
+
+  
   return card(`swag-nft ${id}`,
     `
-      <h6>${post.swag.length}. Text</h6>
-      <section class="${textTabId}">
-        <div>
-          <div class="input-field">
-            <input id="${textId}" type="text" class="validate">
-            <label for="${textId}">${swag.value}</label>
-          </div>
-        </div>
-        <div>
-          <p class="range-field">
-            <input type="range" id="${fontId}" value="${swag.font}" min="8" max="54" />
-            <label for="${fontId}">Font: ${swag.font}</label>
-          </p>
-        </div>
-      </section>
+      <h6>${post.swag.length}. NFT</h6>
       <section class="${posTabId} hide">
         <p class="range-field">
           <input type="range" id="${posxId}" value="${swag.pos.x}" min="0" max="330" />

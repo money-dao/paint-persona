@@ -7,6 +7,10 @@ body {
   justify-content: center;
 }
 
+.nav-wrapper {
+  padding: 0 24px;
+}
+
 .card-sm {
   height: 180px;
 }
