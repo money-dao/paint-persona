@@ -5,7 +5,7 @@
 * npm run refresh
 * http://localhost:4200
 
-## Todos:
+## Todos - alpha:
 * firebase integration
   * server - post
 * post - image, like, subscribe

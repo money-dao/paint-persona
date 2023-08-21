@@ -1,6 +1,8 @@
 const el = require('../el/_el.js')
 const event = require('../service/event.js')
 const data = require('../service/data.js')
+const db = require('../service/db.js')
+const http = require('../service/http.js')
 const profileNotFound = require('./profilenotfound.js')
 
 module.exports = () => {
@@ -9,6 +11,8 @@ module.exports = () => {
   if(!profile) return profileNotFound()
   
   let post = {
+    id: event.guid(),
+    mbKey: profile.nft.address.toString(),
     size: 180,
     color: '#fff',
     swag: []
@@ -52,6 +56,18 @@ module.exports = () => {
         <button id="${setColor(color)}" class="circle color-ball btn" style="background: ${color};"></button>
       `).join('')
   }
+
+  const postId = event.click(() => {
+    const post = data`edit-post`()
+    const pubkey = data`pubkey`().toString()
+    //TODO: send money
+    const txId = ''
+    
+    post.date = new Date().toDateString()
+    post.time = new Date().getTime()
+    console.log(post)
+    http.post('post', { txId, pubkey, post })
+  })
  
   return el.nav(
     el.route(  
@@ -59,7 +75,7 @@ module.exports = () => {
       el.row(
         el.col('s12 m3',
           el.mb_card(profile.img, profile.title, false), 
-          `<a class="waves-effect waves-light btn col s12" href="#profile">Post 0.03 sol</a>`,
+          `<a class="waves-effect waves-light btn col s12" id="${postId}">Post 0.03 sol</a>`,
           `<a class="waves-effect waves-light btn col s12" href="#profile">Cancel</a>`,
         ),
         el.col('s12 m9',

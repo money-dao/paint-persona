@@ -1,3 +1,5 @@
 /node_modules
 /dist
 package-lock.json
+/www/service/db_key.js
+/server/asset/fbkey.js

@@ -90,6 +90,7 @@ const moneyboy_balance = async () => {
   await Promise.all(moneyNfts.map(async nft => {
     const meta = await fetch(nft.uri)
     const json = await meta.json()
+    json.address = nft.mintAddress
     if (nft.name.substring(0,16) == 'Solana Money Boy')
       money.boys.push(json)
     else if (nft.name.substring(0,17) == 'Solana Money Girl')

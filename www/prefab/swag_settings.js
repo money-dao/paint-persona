@@ -23,10 +23,9 @@ const swagSettings = (id) => {
 
   const settingsTabId = event.el((el, id) => {
     swag.tabfn(el, id)
-    el.addEventListener('editpost', () => {
-      console.log(swag.get().value?.image)
+    el.addEventListener('editpost', () => 
       el.firstChild.src = swag.get().value?.image
-    })
+    )
   })
 
   return {
