@@ -20,17 +20,40 @@ service.db.write = (location, obj) => {
 service.db.push = (location, obj) => {
   const db = getDatabase()
   const ref = db.ref(location).push()
-  return ref.set(obj)
+  ref.set(obj)
+  return ref.key
 }
 
-service.db.read = (location, fn) => {
+service.db.pushThen = (location, obj) => {
+  const db = getDatabase()
+  const ref = db.ref(location).push()
+  return {key: ref.key, resolve: () => ref.set(obj)}
+}
+
+service.db.read = location => {
   const db = getDatabase()
   const ref = db.ref(location)
 
-  ref.on('value', 
-    (snapshot) => fn(snapshot.val()), 
-    (errorObject) =>  console.error('The read failed: ' + errorObject.name) 
-  )
+  return new Promise((resolve, error) => ref.on('value', 
+    (snapshot) => resolve(snapshot.val()), 
+    (errorObject) =>  {
+      console.error('The read failed: ' + errorObject.name) 
+      error(errorObject)
+    }
+  ))
+}
+
+service.db.limit = (location, limit) => {
+  const db = getDatabase()
+  const ref = db.ref(location)
+
+  return new Promise((resolve, error) => ref.limitToLast(limit).on('value', 
+    (snapshot) => resolve(snapshot.val()), 
+    (errorObject) => {
+      console.error('The read failed: ' + errorObject.name) 
+      error(errorObject)
+    }
+  ))
 }
 
 module.exports = {}

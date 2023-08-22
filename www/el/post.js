@@ -14,17 +14,23 @@ const renderSwag = swag => {
       return `<img style="${style}" src="${swag.value.image}" title="${swag.value.name}" class="${classList}">`
   }
 }
+const render = (el, post) => {
+  el.innerHTML = ''
+  if(post.swag)
+    post.swag.forEach(swag => event.append(el, renderSwag(swag)))
+  el.parentElement.parentElement.style.background = post.color
+}
 
-const post = () => {
+const post = loadedPost => {
 
   const innerId = event.el(el => {
-    el.addEventListener('editpost', e => {
-      const post = data`edit-post`()
-      el.innerHTML = ''
-      if(post.swag)
-        post.swag.forEach(swag => event.append(el, renderSwag(swag)))
-      el.parentElement.parentElement.style.background = post.color
-    })
+    if(!loadedPost)
+      el.addEventListener('editpost', e => {
+        const post = data`edit-post`()
+        render(el, post)
+      })
+    else 
+      render(el, loadedPost)
   })
     
   return card('card-sm',

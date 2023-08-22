@@ -9,10 +9,17 @@ module.exports = () => {
 
   const profile = data`profile`()
   if(!profile) return profileNotFound()
+
+  const pubkey = data`pubkey`()
   
   let post = {
     id: event.guid(),
-    mbKey: profile.nft.address.toString(),
+    creator: pubkey.toString(),
+    mb: {
+      key: profile.nft.address.toString(),
+      name: profile.title,
+      image: profile.img
+    },
     size: 180,
     color: '#fff',
     swag: []
@@ -79,7 +86,6 @@ module.exports = () => {
           `<a class="waves-effect waves-light btn col s12" href="#profile">Cancel</a>`,
         ),
         el.col('s12 m9',
-          `<h1 class="white-text">New Post</h1>`,
           el.row(
             `<div class="switch">
               <label class="white-text">

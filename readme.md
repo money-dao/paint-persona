@@ -6,11 +6,12 @@
 * http://localhost:4200
 
 ## Todos - alpha:
-* firebase integration
-  * server - post
 * post - image, like, subscribe
 * browse page
+* search
 
-### Completed Todos:
+### Completed Todos (newest to oldest):
+* firebase integration
+  * server - post
 * background color for post
 * text color

@@ -1,23 +1,40 @@
 const el = require('../el/_el.js')
 const data = require('../service/data.js')
+const http = require('../service/http.js')
+const event = require('../service/event.js')
 const profileNotFound = require('./profilenotfound.js')
 
 module.exports = () => {
   
   const profile = data`profile`()
   if(!profile) return profileNotFound()
+  const pubkey = data`pubkey`()
+  console.log(profile)
+
+  const getProfiles = async () => { 
+    const posts = await http.post('loadprofile', {
+      userPubkey: pubkey.toString(), 
+      mbPubkey: profile.nft.address.toString()
+    })
+    const postsDiv = document.getElementById('profile-posts')
+    postsDiv.innerHTML = ''
+    if(posts.length)
+      posts.forEach(post => event.append(postsDiv, el.post(post)))
+    else
+      postsDiv.innerHTML = `<h1 class="white-text">No posts yet...</h1>`
+  }
+  getProfiles()
   
   return el.nav(
     el.route(  
       el.row(
         el.col('s12 m3',
           el.mb_card(profile.img, profile.title, false), 
-          `<a class="waves-effect waves-light btn col s12" href="#post">Post 0.03 sol</a>`,
-          `<button class="waves-effect waves-light btn col s12">Subscribe 0.3 sol</button>`
+          `<a class="waves-effect waves-light btn col s12" href="#post">Post</a>`,
         ),        
-        el.col('s12 m9',
-          `<h1 class="white-text">Posts</h1>`
-        )
+        el.col('s12 m9', `
+          <div id="profile-posts" class="flex-center"></div>
+        `)
       )
     )
   )
