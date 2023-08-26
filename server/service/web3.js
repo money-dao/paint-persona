@@ -32,6 +32,16 @@ const validatePost = async (txId, post) => {
   return valid
 }
 
+const validateLike = async (txId, postId) => {
+  const valid = true
+  return valid
+}
+
+const validateSubscription = async (txId, mbPubkey) => {
+  const valid = true
+  return valid
+}
+
 service.web3.post = async (txId, post) => {
   const valid = validatePost(txId, post)
   if(valid){
@@ -53,6 +63,29 @@ service.web3.loadProfilePosts = async (userPubkey, mbPubkey) => {
   const postsAr = Object.values(posts)
   const loadedPosts = await Promise.all(postsAr.map(async postId => service.db.read(`/post/${postId}`)))
   return loadedPosts
+}
+
+service.web3.like = async (txId, postId) => {
+  const valid = validateLike(txId, postId)
+  let likes = await service.db.read(`/post/${postId}/likes`)
+  likes = likes || 0
+  likes++
+  service.db.write(`/post/${postId}/likes`, likes)
+  return {likes}
+}
+
+service.web3.subscribe = async (txId, postId, userPubkey, mbPubkey) => {
+  const valid = validateSubscription(txId, mbPubkey)
+  const subscribers = await service.db.read(`/post/${postId}/subscribers`) || []
+  const fortnight = new Date(Date.now() + 12096e5).toDateString()
+  const subscriber = {
+    fortnight,
+    txId,
+    user: userPubkey
+  }
+  subscribers.push(subscriber)
+  service.db.write(`/post/${postId}/subscribers`, subscribers)
+  return {msg: 'done'}
 }
 
 module.exports = {}

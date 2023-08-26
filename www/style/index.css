@@ -20,6 +20,35 @@ body {
   justify-content: center;
 }
 
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post-react {
+  display: flex;
+  margin-top: -40px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.post-react img {
+  width: 45px;
+  height: 45px;
+  position: relative;
+}
+
+.post-react button {
+  text-shadow: 3px 3px rgba(0, 0, 0, 0.3);
+  font-size: larger;
+}
+
+.post-react .flex-between {
+  align-items: center;
+  width: 100%;
+  padding-left: 6px;
+}
+
 .nav-wrapper {
   padding: 0 24px;
 }

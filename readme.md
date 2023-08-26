@@ -6,11 +6,13 @@
 * http://localhost:4200
 
 ## Todos - alpha:
-* post - image, like, subscribe
 * browse page
 * search
+* solana integration
+* style
 
 ### Completed Todos (newest to oldest):
+* post - image, like, subscribe
 * firebase integration
   * server - post
 * background color for post

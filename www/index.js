@@ -6,8 +6,12 @@ const hub = require('./route/hub.js')
 const browse = require('./route/browse.js')
 const pageNotFound = require('./route/pagenotfound.js')
 
+if(!location.href.includes('#'))
+  location.hash = '#'
+
 router.init(pageNotFound, {
   '': home,
+  '#': home,
   '#hub': hub,
   '#profile': profile,
   '#post': post,
