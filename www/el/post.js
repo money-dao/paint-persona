@@ -11,7 +11,9 @@ const renderSwag = swag => {
       return `<p style="${style}" class="flow-text">${swag.value}</p>`
     case 'nft':
       style = `left: ${swag.pos.x}px;top: ${swag.pos.y}px;width: ${swag.size}px;transform: rotate(${swag.pos.r}deg);`
-      classList = `${swag.circle ? 'circle' : ''}`
+      classList = ''
+      if(swag.circle == true || swag.circle == 'true')
+        classList += 'circle'
       return `<img style="${style}" src="${swag.value.image}" title="${swag.value.name}" class="${classList}">`
   }
 }
@@ -45,7 +47,11 @@ const post = (loadedPost) => {
   })
 
   const profileId = event.click(el => {
-    data`profile`(loadedPost)
+    data`profile`({
+      img: loadedPost.mb.image,
+      title: loadedPost.mb.name,
+      nft: {address: {toString: () => loadedPost.mb.key}}
+    })
     location.hash = '#profile'
   })
 
@@ -70,15 +76,15 @@ const post = (loadedPost) => {
   })
     
   return `
-    <div>
-      ${card('card-sm',
+    <div class="post-frame">
+      ${card(`card-${loadedPost ? (loadedPost.size === '180' ? 'sm' : 'lg') : 'sm'}`,
         `<div class="post" id="${innerId}"></div>`  
       )}
       <div id="${reactId}" class="post-react">
         <a id="${profileId}"><img class="circle"></a>
         <div>
-          <button id="${likeId}" class="btn-floating waves-effect waves-light pink"><i class="material-icons">thumb_up</i></button>
-          <button id="${subscribeId}" class="btn-floating waves-effect waves-light green"><i class="material-icons">card_membership</i></button>
+          <button id="${likeId}" class="btn-floating waves-effect waves-light pink"><i class="material-icons">mood</i></button>
+          <button id="${subscribeId}" class="btn-floating waves-effect waves-light green"><i class="material-icons">person_add</i></button>
         </div>
       </div>
     </div>

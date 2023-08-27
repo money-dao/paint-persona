@@ -15,7 +15,7 @@ const hub = () => {
       title: nft.name,
       nft
     })
-    location.hash = '#profile'
+    location.hash = '#browse'
   })
   
   const mbCards = () => accounts.map(nft => `

@@ -58,7 +58,7 @@ service.web3.post = async (txId, post) => {
 service.web3.loadProfilePosts = async (userPubkey, mbPubkey) => {
   console.log('load profile', mbPubkey)
   const isOwner = await validateOwnership(userPubkey, mbPubkey)
-  const posts = await service.db.limit( `profile/${mbPubkey}/post`, isOwner ? 10 : 3 )
+  const posts = await service.db.limit( `/profile/${mbPubkey}/post`, isOwner ? 10 : 3 )
   if(!posts) return []
   const postsAr = Object.values(posts)
   const loadedPosts = await Promise.all(postsAr.map(async postId => service.db.read(`/post/${postId}`)))
@@ -76,16 +76,39 @@ service.web3.like = async (txId, postId) => {
 
 service.web3.subscribe = async (txId, postId, userPubkey, mbPubkey) => {
   const valid = validateSubscription(txId, mbPubkey)
-  const subscribers = await service.db.read(`/post/${postId}/subscribers`) || []
+  const postMBPubkey = await service.db.read(`/post/${postId}/mb/key`)
   const fortnight = new Date(Date.now() + 12096e5).toDateString()
   const subscriber = {
     fortnight,
     txId,
     user: userPubkey
   }
-  subscribers.push(subscriber)
-  service.db.write(`/post/${postId}/subscribers`, subscribers)
+  service.db.push(`/profile/${postMBPubkey}/subscribers`, subscriber)
   return {msg: 'done'}
+}
+
+let posts = {}, postsByLikes = []
+
+const loadPosts = async () => {
+  let resPosts = await service.db.order(`post`, 'likes')
+  if(!resPosts) return []
+  posts = resPosts
+  const resAr = Object.values(posts)
+  const l = a => a.likes ? a.likes : 0
+  postsByLikes = resAr.sort((a, b) => {
+    if(l(a) > l(b)) return -1
+    if(l(a) < l(b)) return 1
+    return 0
+  })
+}
+
+service.web3.browse = async (page) => {
+  const amount = 4
+  const start = parseInt(page) * amount
+  const end = start + amount
+  await loadPosts()
+  const res = postsByLikes.slice(start, end)
+  return res
 }
 
 module.exports = {}

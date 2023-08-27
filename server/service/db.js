@@ -34,7 +34,7 @@ service.db.read = location => {
   const db = getDatabase()
   const ref = db.ref(location)
 
-  return new Promise((resolve, error) => ref.on('value', 
+  return new Promise((resolve, error) => ref.once('value', 
     (snapshot) => resolve(snapshot.val()), 
     (errorObject) =>  {
       console.error('The read failed: ' + errorObject.name) 
@@ -47,8 +47,34 @@ service.db.limit = (location, limit) => {
   const db = getDatabase()
   const ref = db.ref(location)
 
-  return new Promise((resolve, error) => ref.limitToLast(limit).on('value', 
+  return new Promise((resolve, error) => ref.limitToLast(limit).once('value', 
     (snapshot) => resolve(snapshot.val()), 
+    (errorObject) => {
+      console.error('The read failed: ' + errorObject.name) 
+      error(errorObject)
+    }
+  ))
+}
+
+service.db.orderRange = (location, order, start, end) => {
+  const db = getDatabase()
+  const ref = db.ref(location)
+
+  return new Promise((resolve, error) => ref.orderByChild(`${location}/${order}`).startAt(start).endAt(end).once('value', 
+    (snapshot) => resolve(snapshot.val()),
+    (errorObject) => {
+      console.error('The read failed: ' + errorObject.name) 
+      error(errorObject)
+    }
+  ))
+}
+
+service.db.order = (location, order) => {
+  const db = getDatabase()
+  const ref = db.ref(location)
+
+  return new Promise((resolve, error) => ref.orderByChild(`${location}/${order}`).once('value', 
+    (snapshot) => resolve(snapshot.val()),
     (errorObject) => {
       console.error('The read failed: ' + errorObject.name) 
       error(errorObject)

@@ -9,7 +9,6 @@ module.exports = () => {
   const profile = data`profile`()
   if(!profile) return profileNotFound()
   const pubkey = data`pubkey`()
-  console.log(profile)
 
   const getProfiles = async () => { 
     const posts = await http.post('loadprofile', {
@@ -29,11 +28,13 @@ module.exports = () => {
     el.route(  
       el.row(
         el.col('s12 m3',
-          el.mb_card(profile.img, profile.title, false), 
+          el.mb_card(profile, false), 
+          `<b class="white-text">Profile</b>`,
+          `<a class="waves-effect waves-light btn col s12" href="#browse">Browse</a>`,
           `<a class="waves-effect waves-light btn col s12" href="#post">Post</a>`,
         ),        
         el.col('s12 m9', `
-          <div id="profile-posts" class="flex-center"></div>
+          <div id="profile-posts" class="flex-center flex-wrap browse-feed"></div>
         `)
       )
     )

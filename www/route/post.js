@@ -29,8 +29,9 @@ module.exports = () => {
   const cardsizeId = event.el(el => {
     el.addEventListener('change', () => {
       post = data`edit-post`()
-      post.size = el.checked ? 180 : 270
+      post.size = el.checked ? 270 : 180
       data`edit-post`(post)
+      console.log("POST SIZE", post.size)
       const card = document.querySelector(el.checked ? '.card-sm' : '.card-lg')
       card.classList.remove(el.checked ? 'card-sm' : 'card-lg')
       card.classList.add(!el.checked ? 'card-sm' : 'card-lg')
@@ -66,6 +67,7 @@ module.exports = () => {
 
   const postId = event.click(() => {
     const post = data`edit-post`()
+    console.log('POST SIZE', post.size)
     const pubkey = data`pubkey`().toString()
     //TODO: send money
     const txId = ''
@@ -81,7 +83,7 @@ module.exports = () => {
       el.swag_nav(),
       el.row(
         el.col('s12 m3',
-          el.mb_card(profile.img, profile.title, false), 
+          el.mb_card(profile, false), 
           `<a class="waves-effect waves-light btn col s12" id="${postId}">Post 0.03 sol</a>`,
           `<a class="waves-effect waves-light btn col s12" href="#profile">Cancel</a>`,
         ),

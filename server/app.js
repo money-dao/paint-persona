@@ -8,5 +8,6 @@ require('./route/loadProfile.js')
 require('./route/post.js')
 require('./route/like.js')
 require('./route/subscribe.js')
+require('./route/browse.js')
 //html
 server.serve('4200')

@@ -8,7 +8,14 @@ const w3 = require('../service/w3.js')
 
 module.exports = () => {
   location.search = ''
- 
+
+  const front_pagers = [
+    {img: mb1, title: 'Solana Money Boy #1087'},
+    {img: mg1, title: 'Solana Money Girl #2162'},
+    {img: mb2, title: 'Solana Money Boy #621'},
+    {img: mg2, title: 'Solana Money Girl #428'}
+  ]
+  
   return el.nav(
     el.route(
       `
@@ -28,12 +35,9 @@ module.exports = () => {
         `</div>`
       ),
       el.row(
-        el.card('blue lighten-3', [
-          el.col('s6 m3', el.mb_card(mb1, 'Solana Money Boy #1087', false)),
-          el.col('s6 m3', el.mb_card(mg1, 'Solana Money Girl #2162', false)),
-          el.col('s6 m3', el.mb_card(mb2, 'Solana Money Boy #621', false)),
-          el.col('s6 m3', el.mb_card(mg2, 'Solana Money Girl #428', false))        
-        ].join(''))
+        el.card('blue lighten-3', 
+          front_pagers.map(mb => el.col('s6 m3', el.mb_card(mb, false))).join('')
+        )
       ),
       el.row(
         el.search()
