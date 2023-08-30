@@ -21,6 +21,7 @@
     "style": "rm -rf dist/style && cp -a www/style dist",
     "build": "npm run server && npm run frontend",
     "start": "node dist/app.js",
+    "serve": "npm run server && npm run start",
     "refresh": "npm run build && npm run start"
   },
   "devDependencies": {

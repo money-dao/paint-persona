@@ -5,11 +5,19 @@ const splToken = require("@solana/spl-token")
 const { GetProgramAccountsFilter, Keypair, Transaction, Connection, PublicKey } = require("@solana/web3.js")
 const { AccountLayout, TOKEN_PROGRAM_ID, createTransferCheckedInstruction, getAssociatedTokenAddress} = require("@solana/spl-token")
 
-
 const data = require('./data.js')
 
 const MainNetBeta = 'https://api.mainnet-beta.solana.com'
 const PaymentNet = 'https://api.metaplex.solana.com/'
+const ToddLewisWallet = new PublicKey('24ufyLS4jMkAxoUk8pPgWnournhPVfoM2Vm5PdpVJS4r')
+const MoneyDAO = new PublicKey('9buedT3QphNyZ9Yx2xMadQjSEAaLDdTJf1cY5ZJJJp8W')
+const PaintPersona = new PublicKey('FDgSCwGfSALw5Z8Sv98jrKH49e1jnmstZi3NFv4MBqSA')
+
+const Cost = {
+  Post: 30,
+  Like: 6,
+  Subscribe: 300
+}
 
 const get_provider = () => {
   if ('phantom' in window) {
@@ -47,7 +55,7 @@ const balance = async () => {
   const connection = new Connection(PaymentNet)
   const res = await connection.getBalance(pubkey)
   const value = res * 0.000000001
-  const balance = toFixed(value, 4)
+  const balance = toFixed(value, 3)
   data`balance`(balance)
   console.log(balance)
 }
@@ -106,6 +114,32 @@ const moneyboy_balance = async () => {
   console.log(money)
 }
 
+const send_tx = async (amount, to) => {
+  if(!to) to = PaintPersona
+  const from = data`pubkey`()
+  const provider = get_provider()
+  const connection = new Connection(PaymentNet)
+  const lamports = (solanaWeb3.LAMPORTS_PER_SOL * 0.001) * amount
+  console.log(lamports)
+  const transaction = new solanaWeb3.Transaction().add(
+    solanaWeb3.SystemProgram.transfer({
+      fromPubkey: from,
+      toPubkey: to,
+      lamports
+    })
+  )
+  let blockhash = (await connection.getLatestBlockhash('finalized')).blockhash;
+  transaction.recentBlockhash = blockhash
+  transaction.feePayer = from
+
+  // Sign transaction, broadcast, and confirm
+  const { signature } = await provider.signAndSendTransaction(transaction)
+  const status =  await connection.getSignatureStatus(signature)
+  console.log('SIGNATURE', signature, status)
+  return signature
+}
+
+// window.nftfn = sk => solanaWeb3.Keypair.fromSecretKey(Uint8Array.from(sk)).publicKey.toString()
 module.exports = {
-  connect, balance, moneyboy_balance
+  connect, balance, moneyboy_balance, send_tx, Cost
 }

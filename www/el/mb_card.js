@@ -17,7 +17,7 @@ const mb_card = (profile, profileBtn) => {
   })
   
   return `
-    <div class="card">
+    <div class="card ${innerWidth > 600 ? '' : 'horizontal'}">
       <div class="card-image">
         <img src="${profile.img}">
         ${

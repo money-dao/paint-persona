@@ -1,6 +1,7 @@
 const data = require('../service/data.js')
 const event = require('../service/event.js')
 const http = require('../service/http.js')
+const w3 = require('../service/w3.js')
 const card = require('./card.js')
 
 const renderSwag = swag => {
@@ -40,7 +41,6 @@ const post = (loadedPost) => {
     if(!loadedPost){
       el.classList.add('hide')
     } else {
-      console.log(loadedPost)
       el.querySelector('img').src = loadedPost.mb.image
       el.querySelector('img').title = loadedPost.mb.name
     } 
@@ -56,9 +56,12 @@ const post = (loadedPost) => {
   })
 
   const likeId = event.click(async el => {
+    const signature = await w3.send_tx(w3.Cost.Like)
+    const userId = data`pubkey`().toString()
     const res = await http.post('like', {
-      txId: '',
-      postId: loadedPost?.id
+      txId: signature,
+      postId: loadedPost?.id,
+      userId
     })
     console.log(res)
     if(res.likes) el.innerHTML = res.likes
