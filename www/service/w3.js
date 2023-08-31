@@ -120,7 +120,7 @@ const send_tx = async (amount, to) => {
   const provider = get_provider()
   const connection = new Connection(PaymentNet)
   const lamports = (solanaWeb3.LAMPORTS_PER_SOL * 0.001) * amount
-  console.log(lamports)
+  console.log(amount * 0.001)
   const transaction = new solanaWeb3.Transaction().add(
     solanaWeb3.SystemProgram.transfer({
       fromPubkey: from,
@@ -134,9 +134,36 @@ const send_tx = async (amount, to) => {
 
   // Sign transaction, broadcast, and confirm
   const { signature } = await provider.signAndSendTransaction(transaction)
-  const status =  await connection.getSignatureStatus(signature)
+  let status
+  await count_blocks(transaction, async () => {
+    status =  await connection.getSignatureStatus(signature)
+    console.log('loading...', status.value)
+    if(status.value && status.value.confirmationStatus === 'finalized')
+      return true
+    return false
+  })
   console.log('SIGNATURE', signature, status)
   return signature
+}
+ 
+const count_blocks = async (transaction, condition) => {
+  const network = PaymentNet
+  const connection = new solanaWeb3.Connection(network)
+  let latestBlockhash = transaction.recentBlockhash
+  data`loading`(true)
+  return new Promise(res => {
+    const i = setInterval(async () => {
+      let blockhash = (await connection.getLatestBlockhash('finalized')).blockhash
+      if(latestBlockhash != blockhash){
+        latestBlockhash = blockhash
+        if(await condition()) {
+          clearInterval(i)
+          data`loading`(false)
+          res()
+        }
+      }   
+    }, 300)
+  })
 }
 
 // window.nftfn = sk => solanaWeb3.Keypair.fromSecretKey(Uint8Array.from(sk)).publicKey.toString()

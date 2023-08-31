@@ -42,14 +42,15 @@ const validateOwnership = async (userPubkey, mbPubkey) => {
 const validateSignatureOnWallet = async (signature, wallet) => {
   const connection = new sw3.Connection(MainNetBeta)
   const user = new sw3.PublicKey(wallet)
-  const signaturesForAddress = await connection.getSignaturesForAddress(user)
+  const signaturesForAddress = await connection.getSignaturesForAddress(user, {limit: 20})
   if(!signaturesForAddress || signaturesForAddress.length === 0) return {error: `No signatures found for ${wallet}`}
   const valid = signaturesForAddress.find(signatureObj => {
     if(signatureObj.signature === signature && signatureObj.confirmationStatus === 'finalized')
       return signatureObj
   })
-  
-  return valid || {error: `Signature not found (${signature}) on wallet (${wallet})`}
+
+  if(valid) return valid 
+  return {error: `Signature not found (${signature}) on wallet (${wallet})`}
 }
 
 const transactionDetails = async (signature) => {
@@ -126,10 +127,7 @@ const moneyboy_balance = async (pubkey) => {
 }
 
 const validatePost = async (txId, post) => {
-  let valid = true
-  //validate pubkey owns mbkey
-  valid = await validateOwnership(post.creator, post.mb.key)
-  if(!valid) return {error: 'Error: Post creator is not the owner of mb'}
+  let valid
   //validate pubkey sent post cost
   valid = await validateTx(txId, post.creator)
   if(!valid) return {error: 'Error: Failed to validate tx'}
@@ -155,30 +153,12 @@ const validateLike = async (txId, postId, userId) => {
   if(status.error) return status
   //get post
   const post = await service.db.read(`/post/${postId}`)
-  //validate pubkey owns mbkey
-  valid = await validateOwnership(post.creator, post.mb.key)
-  if(!valid) return {error: 'Error: Post creator is not the owner of mb'}
   //validate pubkey sent post cost
   valid = await validateTx(txId, userId)
   if(!valid) return {error: 'Error: Failed to validate tx'}
   if(valid.error) return valid
   if(valid.sent !== Cost.Like) return {error: 'Error: Amount is incorrect'}
   return {post}
-}
-
-const validateSubscription = async (txId, mbPubkey) => {
-  const valid = true
-  //get post
-  const post = await service.db.read(`/post/${postId}`)
-  //validate pubkey owns mbkey
-  valid = await validateOwnership(post.creator, post.mb.key)
-  if(!valid) return {error: 'Error: Post creator is not the owner of mb'}
-  //validate pubkey sent post cost
-  valid = await validateTx(txId, post.creator)
-  if(!valid) return {error: 'Error: Failed to validate tx'}
-  if(valid.error) return valid
-  if(valid.sent !== Cost.Like) return {error: 'Error: Amount is incorrect'}
-  return valid
 }
 
 const getOwner = async tokenPubkey => {
@@ -214,16 +194,14 @@ const send_tx = async (amount, fromKeypair, toPubkey) => {
 }
 
 service.web3.post = async (txId, post) => {
-  const valid = validatePost(txId, post)
-  if(valid){
-    console.log(`post [${post.mb.key}]`)
-    const postMeta = service.db.pushThen(`/post`, post)
-    post.id = postMeta.key
-    postMeta.resolve()
-    service.db.push(`/profile/${post.mb.key}/post`, post.id)
-    return {msg: 'done'}
-  }
-  return {error: valid}
+  const valid = await validatePost(txId, post)
+  if(valid.error) return valid  
+  console.log(`post [${post.mb.key}]`)
+  const postMeta = service.db.pushThen(`/post`, post)
+  post.id = postMeta.key
+  postMeta.resolve()
+  service.db.push(`/profile/${post.mb.key}/post`, post.id)
+  return {msg: 'done'}
 }
 
 service.web3.loadProfilePosts = async (userPubkey, mbPubkey) => {
@@ -259,20 +237,7 @@ service.web3.like = async (txId, postId, userId) => {
   await service.db.push('reward/like', rewardSignature)
   return {likes}
 }
-service.web3.like('2AyJtwCZDGMYurxNG2Dm9jierqHFtCpp2yrx9sMcRywfXpxpC1mQXoQDnKhhpmjM1F2CDyEfHizAap9HQ5LNLZkW', '-NcnyaPZEQ6w7okvojRp', '2BLHWKuts7Nn5cRr1NYtCd8DV644RomkFVfKg5RPx4nP')
-
-service.web3.subscribe = async (txId, postId, userPubkey, mbPubkey) => {
-  const valid = validateSubscription(txId, mbPubkey)
-  const postMBPubkey = await service.db.read(`/post/${postId}/mb/key`)
-  const fortnight = new Date(Date.now() + 12096e5).toDateString()
-  const subscriber = {
-    fortnight,
-    txId,
-    user: userPubkey
-  }
-  service.db.push(`/profile/${postMBPubkey}/subscribers`, subscriber)
-  return {msg: 'done'}
-}
+// service.web3.like('66oN5QvM8DCjwH5GB23bdkvxbXDjP6dxYJZFtYrUFk3sM674TScGyrnEAZCzYS2XUvPVhRisupMN6UgnCns5DbAS', '-NcoQVzVnwsA32XAKdY_', '2BLHWKuts7Nn5cRr1NYtCd8DV644RomkFVfKg5RPx4nP')
 
 let posts = {}, postsByLikes = []
 

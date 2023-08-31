@@ -1,9 +1,9 @@
 const el = require('../el/_el.js')
 const event = require('../service/event.js')
 const data = require('../service/data.js')
-const db = require('../service/db.js')
 const http = require('../service/http.js')
 const profileNotFound = require('./profilenotfound.js')
+const w3 = require('../service/w3.js')
 
 module.exports = () => {
 
@@ -65,17 +65,17 @@ module.exports = () => {
       `).join('')
   }
 
-  const postId = event.click(() => {
+  const postId = event.click(async () => {
     const post = data`edit-post`()
     console.log('POST SIZE', post.size)
     const pubkey = data`pubkey`().toString()
-    //TODO: send money
-    const txId = ''
-    
+    const signature = await w3.send_tx(w3.Cost.Post)
+        
     post.date = new Date().toDateString()
     post.time = new Date().getTime()
     console.log(post)
-    http.post('post', { txId, pubkey, post })
+    const res = await http.post('post', { txId: signature, pubkey, post })
+    console.log(res)
   })
  
   return el.nav(
