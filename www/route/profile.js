@@ -41,14 +41,14 @@ module.exports = () => {
         el.col('s12 m3',
           el.mb_card(profile, false), 
           isOwned ? `
-              <a class="waves-effect waves-light btn col s12" href="#browse">Browse</a>
-              <a class="waves-effect waves-light btn col s12" href="#post">Post</a>
+              <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="#browse">Browse</a>
+              <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="#post">Post</a>
             ` : `
-              <a class="waves-effect waves-light btn col s12" href="#hub">Hub</a>
+              <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="#hub">Hub</a>
             `,
           `
-            <a class="waves-effect waves-light btn col s12" href="https://www.tensor.trade/item/${profile.nft.address.toString()}" target="_blank">Tensor</a>
-            <a class="waves-effect waves-light btn col s12" id="${copyId}">Copy ID</a>
+            <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="https://www.tensor.trade/item/${profile.nft.address.toString()}" target="_blank">Tensor</a>
+            <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" id="${copyId}">Copy ID</a>
           `
         ),        
         el.col('s12 m9', `

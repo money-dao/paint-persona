@@ -28,7 +28,7 @@ const search = () => {
       </div>
     </div>
     <div class="col s3">
-      <button id="${goId}" class="waves-effect waves-light btn col s12">Go</button>
+      <button id="${goId}" class="waves-effect waves-light btn col s12 deep-purple lighten-2">Go</button>
     </div>
   </form>`
 }

@@ -164,3 +164,15 @@ nav {
   left: 9px;
   z-index: 3;
 }
+
+.home-tile {
+  height: 325px;
+  display: flex;
+  align-items: center;
+}
+
+@media screen and (min-width: 400px) {
+  .home-tile {
+    height: 555px;
+  }
+}

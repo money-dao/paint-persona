@@ -3,35 +3,43 @@ const mb2 = require('../asset/mb2.png')
 const mg1 = require('../asset/mg1.png')
 const mg2 = require('../asset/mg2.png')
 const el = require('../el/_el.js')
-const http = require('../service/http.js')
+const event = require('../service/event.js')
+const w3 = require('../service/w3.js')
 
 module.exports = () => {
   location.search = ''
 
-  const front_pagers = [
-    {img: mb1, title: 'Solana Money Boy #1087'},
-    {img: mg1, title: 'Solana Money Girl #2162'},
-    {img: mb2, title: 'Solana Money Boy #621'},
-    {img: mg2, title: 'Solana Money Girl #428'}
+  const mbs = [
+    {img: mb1, title: 'Solana Money Boy #1087'}
   ]
   
-  return el.nav(
-    el.route(
-      el.row(
-        el.card('blue lighten-3', 
-          front_pagers.map(mb => el.col('s12 m3', el.mb_card(mb, false))).join('')
-        )
-      ),
-      el.row(
-        `<div class="deep-purple lighten-4">`,
-          el.collapible(
-            el.collapse_li('Browse', 'View and like posts as a moneyboy or moneygirl.'),
-            el.collapse_li('Post', `Spend ${el.cost('0.03', 18)} to make a post.`),
-            el.collapse_li('Earn', `Earn ${el.cost('0.005', 18)} for each like on a post created by a mb or mg you own.`)
-          ),
-        `</div>`
-      ),
-      el.footer()
-    )
+  const connectId = event.click(async () => {
+    await w3.connect()
+    document.querySelector('nav').dispatchEvent('balance')
+  })
+
+  const homeTile = (left, right) => el.row(
+    el.col('s12 m8 home-tile', left),
+    el.col('s12 m4 home-tile', right)
+  )
+  
+  return el.route(
+    homeTile(
+      `<div class="white-text">
+        <h1>Paint Persona</h1>
+        <h5>A Solana Moneyboys experience</h5>
+        <br>
+        <button class="waves-effect waves-light btn col s12 deep-purple lighten-2" id="${connectId}">Connect</button>
+        <h6 class="col s12 white-text"><ul class="browser-default">
+          <li>Use Moneyboys or Moneygirls</li>
+          <li>Create Posts</li>
+          <li>Earn SOL for likes on your posts</li>
+        </ul></h6>
+      </div>`,`
+      <div class="col s12">
+        ${el.mb_card(mbs[0], false)}
+      </div>`
+    ),
+    // el.footer()
   )
 }
