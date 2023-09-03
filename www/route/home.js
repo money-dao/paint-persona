@@ -31,9 +31,6 @@ module.exports = () => {
           ),
         `</div>`
       ),
-      el.row(
-        el.search()
-      ),
       el.footer()
     )
   )

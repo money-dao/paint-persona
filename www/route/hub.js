@@ -57,7 +57,7 @@ const hub = () => {
           </table>`
         )
       ),
-      el.footer()
+      el.footer(true)
     )
   )
 }

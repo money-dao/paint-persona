@@ -60,6 +60,27 @@ const balance = async () => {
   console.log(balance)
 }
 
+const get_nfts = async (...ids) => {
+  const connection = new Connection(PaymentNet)
+  const wallet = data`pubkey`()
+
+  const metaplex = Metaplex.make(connection)
+      .use(keypairIdentity(wallet))
+      .use(bundlrStorage())
+
+  ids = ids.map(id => new solanaWeb3.PublicKey(id))
+  const nfts = await metaplex.nfts().findAllByMintList({ mints: ids })
+
+  let res = {}
+  await Promise.all(nfts.map(async nft => {
+    const meta = await fetch(nft.uri)
+    const json = await meta.json()
+    json.address = nft.mintAddress
+    res[json.address.toString()] = json
+  }))
+  return res
+}
+
 const moneyboy_balance = async () => {
   const connection = new Connection(PaymentNet)
   const wallet = data`pubkey`()
@@ -168,5 +189,5 @@ const count_blocks = async (transaction, condition) => {
 
 // window.nftfn = sk => solanaWeb3.Keypair.fromSecretKey(Uint8Array.from(sk)).publicKey.toString()
 module.exports = {
-  connect, balance, moneyboy_balance, send_tx, Cost
+  connect, balance, moneyboy_balance, send_tx, Cost, get_nfts
 }
