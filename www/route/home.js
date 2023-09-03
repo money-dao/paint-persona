@@ -7,7 +7,6 @@ const event = require('../service/event.js')
 const w3 = require('../service/w3.js')
 
 module.exports = () => {
-  location.search = ''
 
   const mbs = [
     {img: mb1, title: 'Solana Money Boy #1087'}
