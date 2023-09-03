@@ -25,6 +25,16 @@ const onFetch = (path, body) => fetch(
     post(body)
 ).then(res => res.json())
 
+const get = async path => {
+    let res = await fetch(path, {
+        headers: {
+            'Access-Control-Allow-Origin':'*',
+        }
+    })
+    return res.json()
+}
+
 module.exports = {
-  post: (path, body) => onFetch(path, body)
+  post: (path, body) => onFetch(path, body),
+  get
 }

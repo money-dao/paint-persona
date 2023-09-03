@@ -35,13 +35,17 @@ module.exports = () => {
       el.row(
         el.col('s12 m3',
           el.mb_card(profile), 
-          `<div><b class="white-text">Browse</b></div>`,
-          el.card('',
-            `<div class="input-field col s12">
-              <input id="${pageId}" type="number" min="1">
-              <label for="${pageId}" class="active">Page</label>
-            </div>`
-          )
+          el.card('',`
+            ${el.row(el.col('s12', `
+              <div class="input-field">
+                <input id="${pageId}" type="number" min="1">
+                <label for="${pageId}" class="active">Page</label>
+              </div>
+            `))}
+            ${el.col('s12 black white-text card-content flex-center v-align', `             
+                ${el.icon('thumb_up')} ${el.cost('0.006', 18)}
+            `)}
+          `)
         ),        
         el.col('s12 m9',
           `<div id="posts" class="flex-center flex-wrap browse-feed"></div>`

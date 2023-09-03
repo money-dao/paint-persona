@@ -1,0 +1,1 @@
+module.exports = (icon, color) => `<i class="material-icons ${color ? `${color}-text` : ''}">${icon}</i>`

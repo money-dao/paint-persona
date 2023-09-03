@@ -10,6 +10,14 @@ module.exports = () => {
   if(!profile) return profileNotFound()
   const pubkey = data`pubkey`()
 
+  const getIsOwned = () => {
+    const nfts = data`nfts`()
+    const accounts = [...nfts.boys, ...nfts.girls]
+    const mbPubkey = profile.nft.address.toString()
+    return accounts.find(nft => mbPubkey == nft.address.toString())
+  }
+  const isOwned = getIsOwned()
+
   const getProfiles = async () => { 
     const posts = await http.post('loadprofile', {
       userPubkey: pubkey.toString(), 
@@ -29,9 +37,14 @@ module.exports = () => {
       el.row(
         el.col('s12 m3',
           el.mb_card(profile, false), 
-          `<b class="white-text">Profile</b>`,
-          `<a class="waves-effect waves-light btn col s12" href="#browse">Browse</a>`,
-          `<a class="waves-effect waves-light btn col s12" href="#post">Post</a>`,
+          isOwned ? `
+              <a class="waves-effect waves-light btn col s12" href="#browse">Browse</a>
+              <a class="waves-effect waves-light btn col s12" href="#post">Post</a>
+              <a class="waves-effect waves-light btn col s12" href="https://www.tensor.trade/item/${profile.nft.address.toString()}" target="_blank">Tensor</a>
+            ` : `
+              <a class="waves-effect waves-light btn col s12" href="#hub">Hub</a>
+              <a class="waves-effect waves-light btn col s12" href="https://www.tensor.trade/item/${profile.nft.address.toString()}" target="_blank">Tensor</a>
+            `
         ),        
         el.col('s12 m9', `
           <div id="profile-posts" class="flex-center flex-wrap browse-feed"></div>

@@ -28,9 +28,20 @@ nav {
   justify-content: center;
 }
 
-.browse-feed {
-  width: 400px;
-  margin: auto;
+.v-center {
+  align-items: center;
+}
+
+.flex-end {
+  display: flex;
+  justify-content: end;
+}
+
+@media screen and (min-width: 400px) {
+  .browse-feed {
+    width: 400px;
+    margin: auto;
+  }
 }
 
 .flex-wrap {
@@ -122,4 +133,30 @@ nav {
 .color-ball {
   height: 32px;
   width: 32px;
+}
+
+.sol-cost {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 3px;
+}
+
+.sol-cost img {
+  z-index: 2 !important;
+  margin-left: 3px;
+}
+
+@media screen and (max-width: 400px) {
+  .mb-card .card-title {
+    line-height: 21px !important;
+    font-size: 21px !important;
+  }
+}
+
+.tx-processing {
+  position: fixed;
+  bottom: 9px;
+  left: 9px;
+  z-index: 3;
 }

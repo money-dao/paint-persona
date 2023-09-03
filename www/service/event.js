@@ -32,13 +32,17 @@ const dispatch = (...e) => {
 const append = (el, text) => {
   const div = document.createElement('div')
   div.innerHTML = text
+  let val = Array.from(div.children)
   while(div.firstChild) el.appendChild(div.firstChild)
+  return val
 }
 
 const prepend = (el, text) => {
   const div = document.createElement('div')
   div.innerHTML = text
+  let val = Array.from(div.children)
   while(div.lastChild) el.prepend(div.lastChild)
+  return val
 }
 
 module.exports = {guid, el, fn, dispatch, append, prepend, click}

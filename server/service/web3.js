@@ -201,6 +201,10 @@ service.web3.post = async (txId, post) => {
   post.id = postMeta.key
   postMeta.resolve()
   service.db.push(`/profile/${post.mb.key}/post`, post.id)
+  let postCount = await service.db.read(`/profile/${post.mb.key}/info/posts`)
+  postCount = postCount || 0
+  postCount++
+  service.db.write(`/profile/${post.mb.key}/info/posts`, postCount)
   return {msg: 'done'}
 }
 
@@ -215,6 +219,22 @@ service.web3.loadProfilePosts = async (userPubkey, mbPubkey) => {
   return loadedPosts
 }
 
+const r = val => parseFloat(val.toFixed(3))
+
+service.web3.loadRevenue = async (mbAr) => {
+  let res = {}
+  await Promise.all(mbAr.map(async mb => {
+    let likes = await service.db.read(`/profile/${mb}/info/likes`)
+    likes ? likes = r(parseInt(likes) * 0.005) : likes = 0
+    let posts = await service.db.read(`/profile/${mb}/info/posts`)
+    posts ? posts = r(parseInt(posts) * 0.03) : posts = 0
+    const total = r((0 - posts) + likes)
+    res[mb] = {likes, posts, total}
+    return mb
+  }))
+  return res
+}
+
 service.web3.like = async (txId, postId, userId) => {
   //validate
   const valid = await validateLike(txId, postId, userId)
@@ -226,8 +246,13 @@ service.web3.like = async (txId, postId, userId) => {
   let likes = await service.db.read(`/post/${postId}/likes`)
   likes = likes || 0
   likes++
+  const profileKey = await service.db.read(`/post/${postId}/mb/key`)
+  let profileLikes = await service.db.read(`/profile/${profileKey}/info/likes`)
+  profileLikes = profileLikes || 0
+  profileLikes++
   console.log(valid)
   await service.db.write(`/post/${postId}/likes`, likes)
+  await service.db.write(`/profile/${profileKey}/info/likes`, profileLikes)
   await service.db.write(`/signature/like/${txId}`, postId)
   //payment to owner
   const postOwner = await getOwner(valid.post.mb.key)
@@ -237,7 +262,6 @@ service.web3.like = async (txId, postId, userId) => {
   await service.db.push('reward/like', rewardSignature)
   return {likes}
 }
-// service.web3.like('66oN5QvM8DCjwH5GB23bdkvxbXDjP6dxYJZFtYrUFk3sM674TScGyrnEAZCzYS2XUvPVhRisupMN6UgnCns5DbAS', '-NcoQVzVnwsA32XAKdY_', '2BLHWKuts7Nn5cRr1NYtCd8DV644RomkFVfKg5RPx4nP')
 
 let posts = {}, postsByLikes = []
 

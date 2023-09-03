@@ -65,17 +65,44 @@ module.exports = () => {
       `).join('')
   }
 
+  let tx_processing
+  const toggleLoader = b => {
+    const col = document.body.querySelector('.post-col')
+    const loader = document.body.querySelector('.post-loader')
+    col.classList[b ? 'add' : 'remove']('hide')
+    loader.classList[b ? 'remove' : 'add']('hide')
+    if(b && !tx_processing) tx_processing = event.append(document.body, el.tx_processing())[0]
+    else {
+      document.body.removeChild(tx_processing)
+      tx_processing = undefined
+    }
+  }
+
   const postId = event.click(async () => {
+    toggleLoader(true)
     const post = data`edit-post`()
-    console.log('POST SIZE', post.size)
     const pubkey = data`pubkey`().toString()
-    const signature = await w3.send_tx(w3.Cost.Post)
+    let signature
+    try{
+      signature = await w3.send_tx(w3.Cost.Post)
+    } catch (err) {
+      toggleLoader(false)
+      return console.error(err)
+    }
         
     post.date = new Date().toDateString()
     post.time = new Date().getTime()
     console.log(post)
-    const res = await http.post('post', { txId: signature, pubkey, post })
-    console.log(res)
+    try{
+      const res = await http.post('post', { txId: signature, pubkey, post })
+      console.log(res)
+      toggleLoader(false)
+      location.hash = '#profile'
+      event.dispatch`balance`('nav')
+    } catch (err) {
+      toggleLoader(false)
+      console.error(err)
+    }
   })
  
   return el.nav(
@@ -84,10 +111,17 @@ module.exports = () => {
       el.row(
         el.col('s12 m3',
           el.mb_card(profile, false), 
-          `<a class="waves-effect waves-light btn col s12" id="${postId}">Post 0.03 sol</a>`,
-          `<a class="waves-effect waves-light btn col s12" href="#profile">Cancel</a>`,
+          `<div class="post-col">
+              <a class="waves-effect waves-light black btn col s12" id="${postId}">Post ${el.cost('0.03', 18)}</a>            
+              <a class="waves-effect waves-light white black-text btn col s12" href="#profile">Cancel</a>
+          </div>`,
+          el.card('post-loader hide flex-center', `
+            <b class="card-title">Submitting post...</b>
+            ${el.loader()}
+          `)
         ),
         el.col('s12 m9',
+          el.row(''),
           el.row(
             `<div class="switch">
               <label class="white-text">

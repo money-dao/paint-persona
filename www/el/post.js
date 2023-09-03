@@ -3,6 +3,9 @@ const event = require('../service/event.js')
 const http = require('../service/http.js')
 const w3 = require('../service/w3.js')
 const card = require('./card.js')
+const loader = require('./loader.js')
+const icon = require('./icon.js')
+const tx_processing = require('./tx_processing.js')
 
 const renderSwag = swag => {
   let style, classList
@@ -56,15 +59,31 @@ const post = (loadedPost) => {
   })
 
   const likeId = event.click(async el => {
-    const signature = await w3.send_tx(w3.Cost.Like)
+    const txEl = event.append(document.body, tx_processing())[0]
+    el.innerHTML = loader()
+    let signature
+    try{
+      signature = await w3.send_tx(w3.Cost.Like)
+    } catch (err) {
+      console.error(err)
+      document.body.removeChild(txEl)
+      return el.innerHTML = icon('thumb_up', 'white')
+    }
     const userId = data`pubkey`().toString()
-    const res = await http.post('like', {
-      txId: signature,
-      postId: loadedPost?.id,
-      userId
-    })
-    console.log(res)
-    if(res.likes) el.innerHTML = res.likes
+    try {
+      const res = await http.post('like', {
+        txId: signature,
+        postId: loadedPost?.id,
+        userId
+      })
+      console.log(res)
+      document.body.removeChild(txEl)
+      if(res.likes) el.innerHTML = res.likes
+      else el.innerHTML = icon('thumb_up', 'white')
+    } catch (err) {
+      document.body.removeChild(txEl)
+      el.innerHTML = icon('thumb_up', 'white')
+    }
   })
 
   const subscribeId = event.click(async el => {
@@ -86,8 +105,8 @@ const post = (loadedPost) => {
       <div id="${reactId}" class="post-react">
         <a id="${profileId}"><img class="circle"></a>
         <div>
-          <button id="${likeId}" class="btn-floating waves-effect waves-light pink"><i class="material-icons">mood</i></button>
-          <button id="${subscribeId}" class="btn-floating waves-effect waves-light green"><i class="material-icons">person_add</i></button>
+          <button id="${likeId}" class="btn-floating waves-effect waves-light pink">${icon('thumb_up', 'white')}</button>
+          <button id="${subscribeId}" class="btn-floating waves-effect waves-light green">${icon('person_add', 'white')}</button>
         </div>
       </div>
     </div>

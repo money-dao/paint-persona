@@ -12,10 +12,16 @@ const swag_nav = require('./swag_nav.js')
 const swag_text = require('./swag_text.js')
 const post = require('./post.js')
 const nav = require('./nav.js')
+const loader = require('./loader.js')
+const icon = require('./icon.js')
+const sol = require('./sol.js')
+const cost = require('./cost.js')
+const tx_processing = require('./tx_processing.js')
 
 module.exports = {
   card, carousel, footer, mb_card, row, search,
   collapible, collapse_li, route, col,
   swag_nav, swag_text, post,
-  nav
+  nav, loader, icon, sol, cost,
+  tx_processing
 }

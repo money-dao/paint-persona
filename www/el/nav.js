@@ -31,14 +31,18 @@ const nav = route => {
       refresh()
     })
   })
+
+  const navId = event.el(el => {
+    el.addEventListener('balance', () => refresh)
+  })
   
   return `
-    <nav>
+    <nav id="${navId}">
       <div class="nav-wrapper">
-        <a id="wallet" href="#hub" class="brand-logo">${wallet ? wallet.substring(0, 6) : 'Persona'}</a>
+        <a id="wallet" href="#hub" class="brand-logo">${wallet ? wallet.substring(0, 6) : 'Paint Persona'}</a>
         <ul id="nav-mobile" class="right">
           <li id="balance" class="${balance ? '' : 'hide'}"><a>${balance} sol</a></li>
-          <li id="connect" class="${pubkey ? 'hide' : ''}"><a id="${connectId}">Connect Wallet</a></li>
+          <li id="connect" class="${pubkey ? 'hide' : ''}"><a id="${connectId}">Connect</a></li>
         </ul>
       </div>
     </nav>

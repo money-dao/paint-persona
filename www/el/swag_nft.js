@@ -6,7 +6,7 @@ const swagNft = require('../prefab/swag_nft.js')
 const swagSettings = require('../prefab/swag_settings.js')
 
 const swag_nft = () => {
-  //init  
+  //init
   const id = event.guid()
   const post = data`edit-post`()
   const swag = {
