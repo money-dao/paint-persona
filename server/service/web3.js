@@ -10,15 +10,16 @@ const MainNetBeta = 'https://api.mainnet-beta.solana.com'
 const PaymentNet = 'https://api.metaplex.solana.com/'
 const ToddLewisWallet = new sw3.PublicKey('24ufyLS4jMkAxoUk8pPgWnournhPVfoM2Vm5PdpVJS4r')
 const PaintPersonaWallet = new sw3.PublicKey('FDgSCwGfSALw5Z8Sv98jrKH49e1jnmstZi3NFv4MBqSA')
+const MoneyDAOWallet = new sw3.PublicKey('9buedT3QphNyZ9Yx2xMadQjSEAaLDdTJf1cY5ZJJJp8W')
 
 const MainKeypair = require('../asset/tls-main.js')
-console.log('main', MainKeypair.publicKey.toString())
-
 
 const Cost = {
   Post: 30000000,
   Like: 6000000,
-  Subscribe: 300000000
+  Subscribe: 300000000,
+  Signup: 12500000000,
+  Donation: 2500000000
 }
 
 const Payment = {
@@ -126,6 +127,15 @@ const moneyboy_balance = async (pubkey) => {
   return money
 }
 
+const validateSignup = async (txId, userId) => {
+  let valid
+  valid = await validateTx(txId, userId)
+  if(!valid) return {error: 'Error: Failed to validate tx'}
+  if(valid.error) return valid
+  if(valid.sent !== Cost.Signup) return {error: 'Error: Amount is incorrect'}
+  return valid
+}
+
 const validatePost = async (txId, post) => {
   let valid
   //validate pubkey sent post cost
@@ -191,6 +201,20 @@ const send_tx = async (amount, fromKeypair, toPubkey) => {
   const status =  await connection.getSignatureStatus(signature)
   console.log('status', status)
   return signature
+}
+
+service.web3.signup = async (txId, userId) => {
+  const valid = await validateSignup(txId, userId)
+  if(valid.error) return valid
+  const date = new Date().toDateString()
+  const signature = await send_tx(Cost.Donation, MainKeypair, MoneyDAOWallet)
+  await service.db.write(`/member/${userId}`, {date, donation: signature})
+  return {msg: 'done'}
+}
+
+service.web3.checkMembership = async userId => {
+  const isMember = await service.db.read(`/member/${userId}`)
+  return isMember || {error: 'Member not found'}
 }
 
 service.web3.post = async (txId, post) => {

@@ -22,7 +22,7 @@ const footer = (hasSearch) => `
     <div class="footer-copyright">
       <div class="container">
       Todd Lewis Studio © 2023 Copyright
-      <a class="grey-text text-lighten-4 right" href="https://website-fr6yohpt0-moneydao-website.vercel.app/" target="_blank">MoneyDAO</a>
+      <a class="grey-text text-lighten-4 right" href="https://moneydao.team/" target="_blank">MoneyDAO</a>
       </div>
     </div>
   </footer>

@@ -3,6 +3,7 @@ const home = require('./route/home.js')
 const profile = require('./route/profile.js')
 const post = require('./route/post.js')
 const hub = require('./route/hub.js')
+const signup = require('./route/signup.js')
 const browse = require('./route/browse.js')
 const pageNotFound = require('./route/pagenotfound.js')
 
@@ -15,5 +16,6 @@ router.init(pageNotFound, {
   '#hub': hub,
   '#profile': profile,
   '#post': post,
-  '#browse': browse
+  '#browse': browse,
+  '#signup': signup
 })

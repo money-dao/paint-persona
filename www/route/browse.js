@@ -34,17 +34,16 @@ module.exports = () => {
     el.route(  
       el.row(
         el.col('s12 m3',
-          el.mb_card(profile), 
-          el.card('',`
-            ${el.row(el.col('s12', `
-              <div class="input-field">
-                <input id="${pageId}" type="number" min="1">
-                <label for="${pageId}" class="active">Page</label>
-              </div>
-            `))}
-            ${el.col('s12 black white-text card-content flex-center v-align', `             
-                ${el.icon('thumb_up')} ${el.cost('0.006', 18)}
-            `)}
+          el.mb_card(profile, true, false), 
+          el.card('', `
+            <div class="input-field">
+              <input id="${pageId}" type="number" min="1">
+              <label for="${pageId}" class="active">Page</label>
+            </div>
+          `),
+          el.card('s12 black white-text', `             
+            <p><b>Cost</b></p>
+            <p class="flex-center v-align">${el.icon('thumb_up')} ${el.cost('0.006', 18)}</p>
           `)
         ),        
         el.col('s12 m9',

@@ -14,12 +14,11 @@ module.exports = () => {
   
   const connectId = event.click(async () => {
     await w3.connect()
-    document.querySelector('nav').dispatchEvent('balance')
   })
 
   const homeTile = (left, right) => el.row(
-    el.col('s12 m8 home-tile', left),
-    el.col('s12 m4 home-tile', right)
+    el.col('s12 m7 l8 home-tile', left),
+    el.col('s12 m5 l4 home-tile', right)
   )
   
   return el.route(

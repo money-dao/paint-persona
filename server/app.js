@@ -10,5 +10,7 @@ require('./route/post.js')
 require('./route/like.js')
 // require('./route/subscribe.js')
 require('./route/browse.js')
+require('./route/signup.js')
+require('./route/checkmember.js')
 //html
 server.serve('4200')

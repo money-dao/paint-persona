@@ -6,6 +6,7 @@ const { GetProgramAccountsFilter, Keypair, Transaction, Connection, PublicKey } 
 const { AccountLayout, TOKEN_PROGRAM_ID, createTransferCheckedInstruction, getAssociatedTokenAddress} = require("@solana/spl-token")
 
 const data = require('./data.js')
+const http = require('./http.js')
 
 const MainNetBeta = 'https://api.mainnet-beta.solana.com'
 const PaymentNet = 'https://api.metaplex.solana.com/'
@@ -16,7 +17,8 @@ const PaintPersona = new PublicKey('FDgSCwGfSALw5Z8Sv98jrKH49e1jnmstZi3NFv4MBqSA
 const Cost = {
   Post: 30,
   Like: 6,
-  Subscribe: 300
+  Subscribe: 300,
+  Signup: 1250
 }
 
 const get_provider = () => {
@@ -40,7 +42,9 @@ const connect = async () => {
     data`connected`(true)
     await balance()
     await moneyboy_balance()
-    location.hash = '#hub'
+    const isMember = await http.post('checkmember', {userId: resp.publicKey.toString()})
+    if(isMember.error) location.hash = '#signup'
+    else location.hash = '#hub'
     return resp.publicKey
   } catch (err) {
       // { code: 4001, message: 'User rejected the request.' }
@@ -130,6 +134,11 @@ const moneyboy_balance = async () => {
       money.mansions.push(json)
     return json
   }))
+
+  const accounts = [...money.boys, ...money.girls]
+  const mbAr = accounts.map(nft => nft.address.toString())
+  const revenue = await http.post('loadrevenue', {mbAr})
+  accounts.forEach(nft => nft.revenue = revenue[nft.address.toString()])
  
   data`nfts`(money)
   console.log(money)

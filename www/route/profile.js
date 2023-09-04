@@ -34,13 +34,26 @@ module.exports = () => {
 
   const clipboard = val => navigator.clipboard.writeText(val)
   const copyId = event.click(() => clipboard(profile.nft.address.toString()))
+
+  let stats = {
+    likes: 0, posts: 0,
+  }
+  if(isOwned) stats = {
+    likes: (isOwned.revenue.likes / 0.005).toFixed(0),
+    posts: (isOwned.revenue.posts / 0.03).toFixed(0),
+  }
   
   return el.nav(
     el.route(  
       el.row(
         el.col('s12 m3',
-          el.mb_card(profile, false), 
+          el.mb_card(profile, false, false), 
           isOwned ? `
+              ${el.card('black white-text', `
+                <p><b>Stats</b></p>
+                <p class="flex-between v-center">${stats.posts} ${el.icon('contacts', 'white')}</p>
+                <p class="flex-between v-center">${stats.likes} ${el.icon('thumb_up', 'white')}</p>
+              `)}
               <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="#browse">Browse</a>
               <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="#post">Post</a>
             ` : `

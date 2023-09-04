@@ -86,16 +86,16 @@ const post = (loadedPost) => {
     }
   })
 
-  const subscribeId = event.click(async el => {
-    const userPubkey = data`pubkey`().toString()
-    const res = await http.post('subscribe', {
-      txId: '',
-      postId: loadedPost?.id,
-      userPubkey,
-      mbPubkey: loadedPost?.mb?.key
-    })
-    console.log(res)
-  })
+  // const subscribeId = event.click(async el => {
+  //   const userPubkey = data`pubkey`().toString()
+  //   const res = await http.post('subscribe', {
+  //     txId: '',
+  //     postId: loadedPost?.id,
+  //     userPubkey,
+  //     mbPubkey: loadedPost?.mb?.key
+  //   })
+  //   console.log(res)
+  // })
     
   return `
     <div class="post-frame">
@@ -106,7 +106,6 @@ const post = (loadedPost) => {
         <a id="${profileId}"><img class="circle"></a>
         <div>
           <button id="${likeId}" class="btn-floating waves-effect waves-light pink">${icon('thumb_up', 'white')}</button>
-          <button id="${subscribeId}" class="btn-floating waves-effect waves-light green">${icon('person_add', 'white')}</button>
         </div>
       </div>
     </div>
