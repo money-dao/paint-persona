@@ -9,6 +9,8 @@ module.exports = () => {
   const profile = data`profile`()
   if(!profile) return profileNotFound()
   const pubkey = data`pubkey`()
+  const member = data`member`()
+  if(!member) return location.hash = '#signup'
 
   const getIsOwned = () => {
     const nfts = data`nfts`()
@@ -43,31 +45,31 @@ module.exports = () => {
     posts: (isOwned.revenue.posts / 0.03).toFixed(0),
   }
   
-  return el.nav(
-    el.route(  
-      el.row(
-        el.col('s12 m3',
-          el.mb_card(profile, false, false), 
-          isOwned ? `
-              ${el.card('black white-text', `
-                <p><b>Stats</b></p>
-                <p class="flex-between v-center">${stats.posts} ${el.icon('contacts', 'white')}</p>
-                <p class="flex-between v-center">${stats.likes} ${el.icon('thumb_up', 'white')}</p>
-              `)}
-              <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="#browse">Browse</a>
-              <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="#post">Post</a>
-            ` : `
-              <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="#hub">Hub</a>
-            `,
-          `
-            <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="https://www.tensor.trade/item/${profile.nft.address.toString()}" target="_blank">Tensor</a>
-            <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" id="${copyId}">Copy ID</a>
-          `
-        ),        
-        el.col('s12 m9', `
-          <div id="profile-posts" class="flex-center flex-wrap browse-feed"></div>
-        `)
-      )
+  const route = el.route(  
+    el.row(
+      el.col('s12 m3',
+        el.mb_card(profile, false, false), 
+        isOwned ? `
+            ${el.card('black white-text', `
+              <p><b>Stats</b></p>
+              <p class="flex-between v-center">${stats.posts} ${el.icon('contacts', 'white')}</p>
+              <p class="flex-between v-center">${stats.likes} ${el.icon('thumb_up', 'white')}</p>
+            `)}
+            <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="#browse">Browse</a>
+            <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="#post">Post</a>
+          ` : `
+            <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="#hub">Hub</a>
+          `,
+        `
+          <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="https://www.tensor.trade/item/${profile.nft.address.toString()}" target="_blank">Tensor</a>
+          <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" id="${copyId}">Copy ID</a>
+        `
+      ),        
+      el.col('s12 m9', `
+        <div id="profile-posts" class="flex-center flex-wrap browse-feed"></div>
+      `)
     )
   )
+  
+  return el.nav(route, true, true)
 }

@@ -6,6 +6,8 @@ const http = require('../service/http.js')
 const hub = () => {
   const pubkey = data`pubkey`()
   if(!pubkey) return location.hash = '#'
+  const member = data`member`()
+  if(!member) return location.hash = '#signup'
 
   const nfts = data`nfts`()
   const accounts = [...nfts.boys, ...nfts.girls]
@@ -38,27 +40,26 @@ const hub = () => {
     `
   ).join('')
   
-  return el.nav(
-    el.route(
-      el.row(
-        el.card('blue lighten-3', 
-          `<table class="highlight">
-            <thead>
-              <tr class="row">
-                  <th class="col s5 m3">NFT</th>
-                  <th class="col s4 m6">Name</th>
-                  <th class="col s3">Earnings</th>
-              </tr>
-            </thead>
+  const route = el.route(
+    el.row(
+      el.card('blue lighten-3', 
+        `<table class="highlight">
+          <thead>
+            <tr class="row">
+                <th class="col s5 m3">NFT</th>
+                <th class="col s4 m6">Name</th>
+                <th class="col s3">Earnings</th>
+            </tr>
+          </thead>
 
-            <tbody>
-              ${mbCards()}
-            </tbody>
-          </table>`
-        )
-      ),
-      el.footer(true)
+          <tbody>
+            ${mbCards()}
+          </tbody>
+        </table>`
+      )
     )
   )
+  
+  return el.nav(route, true, true)
 }
 module.exports = hub

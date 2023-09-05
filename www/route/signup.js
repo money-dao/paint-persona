@@ -10,8 +10,6 @@ const signup = () => {
 
   const nfts = data`nfts`()
   const accounts = [...nfts.boys, ...nfts.girls]
-
-  const moneyDaoLink = `<a href="https://moneydao.team/" target="_blank">MoneyDAO</a>`
   
   const registerId = event.click(async btn => {
     const txEl = event.append(document.body, el.tx_processing())[0]
@@ -38,25 +36,23 @@ const signup = () => {
   
   return el.route(
     el.row(
-      el.col('s12 m7 l8 home-tile white-text',
-        el.col('s12', `
-          <h1>Signup</h1>
-          <h6>${pubkey.toString().substring(0, 21) + '...'}</h6>
+      el.col('s12 m7 l8 home-tile white-text', `
+        <div>
+          <h1>Sign Up</h1>
+          <h5>Gain full access to Paint Persona</h5>
           <br>
-          <h5>Todd Lewis Studio</h5>
-          <a target="_blank" class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="https://twitter.com/ToddLewisStudio">Twitter</a>
-          <a target="_blank" class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="https://moneydao.team">MoneyDAO</a>
-        `)
-      ),
+          <a class="waves-effect waves-light btn col s12 deep-purple lighten-2" href="#support">Support</a>
+        </div>
+      `),
       el.col('s12 m5 l4 home-tile',
         el.col('s12',
           el.card('', `
-            <b>Register</b>
-            <ul class="browser-default">
-              <li>Full access to <b>Paint Persona</b></li>
-              <li>Donate ${el.cost('0.25', 18)} to ${moneyDaoLink}</li>
-            </ul>
-            <button id="${registerId}" class="waves-effect waves-light btn col s12 black">${el.cost('1.25', 18)}</button>
+            ${el.col('row s12', `
+              <b>Register</b>
+              <br>
+              <small title="${pubkey.toString()}">${pubkey.toString().substring(0, 21) + '...'}</small>
+            `)}
+            <button id="${registerId}" class="waves-effect waves-light btn col s12 black">${el.cost('1', 18)}</button>
           `)
         )
       )

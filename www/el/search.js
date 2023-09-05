@@ -9,14 +9,18 @@ const search = () => {
   const goId = event.click(async () => {
     const search = document.querySelector(`#${searchId}`)
     let nfts = await w3.get_nfts(search.value)
-    if(nfts) nfts = Object.values(nfts)    
-    const nft = nfts[0]
-    data`profile`({
-      img: nft.image,
-      title: nft.name,
-      nft
-    })
-    location.hash = '#profile'
+    if(nfts) {
+      nfts = Object.values(nfts)    
+      const nft = nfts[0]
+      data`profile`({
+        img: nft.image,
+        title: nft.name,
+        nft
+      })
+      location.hash = '#profile'
+    } else {
+      location.hash = '#profilenotfound'
+    }
   })
   
   return ` <form class="row white flex v-center">

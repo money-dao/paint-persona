@@ -1,8 +1,9 @@
 const data = require('../service/data.js')
 const event = require('../service/event.js')
 const w3 = require('../service/w3.js')
+const footer = require('./footer.js')
 
-const nav = route => {
+const nav = (route, hasFooter, hasSearch) => {
   let pubkey = data`pubkey`()
   let wallet = pubkey ? pubkey.toString() : undefined
   let balance = data`balance`()
@@ -47,6 +48,7 @@ const nav = route => {
       </div>
     </nav>
     ${route}    
+    ${hasFooter ? footer(hasSearch) : ''}
   ` 
 }
 module.exports = nav

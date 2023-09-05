@@ -19,6 +19,12 @@ nav {
   background: #6288fd !important;
 }
 
+button:focus,
+a:focus {
+  outline: 3px solid hotpink;
+  z-index: 2;
+}
+
 .page-footer {
   background: #6288fd !important;
 }

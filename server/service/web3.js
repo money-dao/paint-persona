@@ -18,8 +18,8 @@ const Cost = {
   Post: 30000000,
   Like: 6000000,
   Subscribe: 300000000,
-  Signup: 12500000000,
-  Donation: 2500000000
+  Signup: 10000000000,
+  // Donation: 2500000000
 }
 
 const Payment = {
@@ -207,8 +207,8 @@ service.web3.signup = async (txId, userId) => {
   const valid = await validateSignup(txId, userId)
   if(valid.error) return valid
   const date = new Date().toDateString()
-  const signature = await send_tx(Cost.Donation, MainKeypair, MoneyDAOWallet)
-  await service.db.write(`/member/${userId}`, {date, donation: signature})
+  // const signature = await send_tx(Cost.Donation, MainKeypair, MoneyDAOWallet)
+  await service.db.write(`/member/${userId}`, {date})
   return {msg: 'done'}
 }
 

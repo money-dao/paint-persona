@@ -1,10 +1,18 @@
 const el = require('../el/_el.js')
+const data = require('../service/data.js')
 
-module.exports = () => el.nav(
-  el.route(
+module.exports = () => {
+  const pubkey = data`pubkey`()
+
+  const route = el.route(
     el.card('',
       `<h1>Profile not found</h1>
-      <a href="#">Home</a>`
+      ${pubkey
+      ? `<a href="#hub">Hub</a>`
+      : `<a href="#">Home</a>` 
+      }`
     )
   )
-)
+
+  return el.nav(route, true, false)
+}

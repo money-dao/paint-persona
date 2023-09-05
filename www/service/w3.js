@@ -18,7 +18,7 @@ const Cost = {
   Post: 30,
   Like: 6,
   Subscribe: 300,
-  Signup: 1250
+  Signup: 1000
 }
 
 const get_provider = () => {
@@ -44,7 +44,10 @@ const connect = async () => {
     await moneyboy_balance()
     const isMember = await http.post('checkmember', {userId: resp.publicKey.toString()})
     if(isMember.error) location.hash = '#signup'
-    else location.hash = '#hub'
+    else {
+      location.hash = '#hub'
+      data`member`(isMember)
+    }
     return resp.publicKey
   } catch (err) {
       // { code: 4001, message: 'User rejected the request.' }

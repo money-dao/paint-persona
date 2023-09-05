@@ -28,14 +28,9 @@ module.exports = () => {
         <h5>A Solana Moneyboys experience</h5>
         <br>
         <button class="waves-effect waves-light btn col s12 deep-purple lighten-2" id="${connectId}">Connect</button>
-        <h6 class="col s12 white-text"><ul class="browser-default">
-          <li>Use Moneyboys or Moneygirls</li>
-          <li>Create Posts</li>
-          <li>Earn SOL for likes on your posts</li>
-        </ul></h6>
       </div>`,`
       <div class="col s12">
-        ${el.mb_card(mbs[0], false)}
+        ${el.mb_card(mbs[0], false, false)}
       </div>`
     ),
     // el.footer()

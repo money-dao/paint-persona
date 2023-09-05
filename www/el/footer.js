@@ -14,6 +14,7 @@ const footer = (hasSearch) => `
         <div class="col m4 offset-m2 s12">
           <h5 class="white-text">Links</h5>
           <ul>
+            <li><a class="grey-text text-lighten-3" href="#support">Customer Support</a></li>
             <li><a class="grey-text text-lighten-3" href="https://www.tensor.trade/trade/solana_money_boys" target="_blank">Get Moneyboys</a></li>
           </ul>
         </div>
