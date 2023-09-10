@@ -1,9 +1,12 @@
 const server = require('./util/server.js')
-//services
+
+/* services */
 require('./service/service.js')
 require('./service/db.js')
+require('./service/w3validate.js')
 require('./service/web3.js')
-//routes
+
+/* routes */
 require('./route/loadProfile.js')
 require('./route/loadRevenue.js')
 require('./route/post.js')
@@ -12,5 +15,6 @@ require('./route/like.js')
 require('./route/browse.js')
 require('./route/signup.js')
 require('./route/checkmember.js')
-//html
+
+/* start server */
 server.serve('4200')

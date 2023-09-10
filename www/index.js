@@ -1,26 +1,13 @@
 const router = require('./service/router.js')
-const home = require('./route/home.js')
-const profile = require('./route/profile.js')
-const post = require('./route/post.js')
-const hub = require('./route/hub.js')
-const signup = require('./route/signup.js')
-const support = require('./route/support.js')
-const browse = require('./route/browse.js')
-const profileNotFound = require('./route/profilenotfound.js')
-const pageNotFound = require('./route/pagenotfound.js')
 
-if(!location.href.includes('#'))
-  location.hash = '#'
-
-router.init(pageNotFound, {
-  '': home,
-  '#': home,
-  '#hub': hub,
-  '#profile': profile,
-  '#post': post,
-  '#browse': browse,
-  '#signup': signup,
-  '#support': support,
-  '#profilenotfound': profileNotFound,
-  '#pagenotfound': pageNotFound
+router.init('#pagenotfound', {
+  '#': require('./route/home.js'),
+  '#hub': require('./route/hub.js'),
+  '#profile': require('./route/profile.js'),
+  '#post': require('./route/post.js'),
+  '#browse': require('./route/browse.js'),
+  '#signup': require('./route/signup.js'),
+  '#support': require('./route/support.js'),
+  '#profilenotfound': require('./route/profilenotfound.js'),
+  '#pagenotfound': require('./route/pagenotfound.js')
 })

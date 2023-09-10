@@ -10,7 +10,7 @@ const support = () => {
   const support = el.route(
     el.row(
       el.card('',`
-        <h1>Support</h1>
+        <h1>Contact</h1>
         ${el.row(`
           <a 
             href="mailto:todd.lewis.art@gmail.com?subject=Paint%20Persona%20Support&body=wallet:%20${pubkey.toString()}" 

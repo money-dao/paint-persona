@@ -6,10 +6,7 @@ const footer = (hasSearch) => `
       <div class="row">
         <div class="col m6 s12">
           <h5><a class="white-text" href="#">Paint Persona</a></h5>
-          ${hasSearch 
-            ? search() 
-            : '<p>Signin to search profiles.</p>'
-          }
+          ${hasSearch ? search() : ''}
         </div>
         <div class="col m4 offset-m2 s12">
           <h5 class="white-text">Links</h5>

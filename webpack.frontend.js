@@ -4,7 +4,7 @@ const webpack = require('webpack')
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 module.exports = {
-  mode: 'development',
+  // mode: 'development',
   entry: {
     index: './www/index.js'
   },
