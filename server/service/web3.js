@@ -4,12 +4,16 @@ const Buffer = require('buffer')
 service.web3 = {}
 
 const MainNetBeta = 'https://api.mainnet-beta.solana.com'
+const HeliusNet = 'https://rpc.helius.xyz/?api-key=bd706e2b-9ee8-49bf-a97e-f14764b99dcb'
 const PaymentNet = 'https://api.metaplex.solana.com/'
 const ToddLewisWallet = new sw3.PublicKey('24ufyLS4jMkAxoUk8pPgWnournhPVfoM2Vm5PdpVJS4r')
 const PaintPersonaWallet = new sw3.PublicKey('FDgSCwGfSALw5Z8Sv98jrKH49e1jnmstZi3NFv4MBqSA')
 const MoneyDAOWallet = new sw3.PublicKey('9buedT3QphNyZ9Yx2xMadQjSEAaLDdTJf1cY5ZJJJp8W')
 
 const MainKeypair = require('../asset/tls-main.js')
+
+// const prod = false
+const prod = true
 
 const Cost = {
   Post: 30000000,
@@ -24,8 +28,18 @@ const Payment = {
   Subscribe: 270000000
 }
 
+const solConnection = () => new sw3.Connection( prod
+  ? HeliusNet
+  : MainNetBeta
+)
+
+const ownerNet = () => new sw3.Connection( prod
+  ? HeliusNet
+  : PaymentNet
+)
+
 const send_tx = async (amount, fromKeypair, toPubkey) => {
-  const connection = new sw3.Connection(PaymentNet)
+  const connection = ownerNet()
   const lamports = amount
   console.log(lamports)
   const transaction = new sw3.Transaction().add(

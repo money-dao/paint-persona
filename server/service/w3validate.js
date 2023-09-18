@@ -6,12 +6,16 @@ const { Metaplex, findMetadataPda, keypairIdentity, bundlrStorage } = require("@
 const { AccountLayout, TOKEN_PROGRAM_ID} = require("@solana/spl-token")
 
 const MainNetBeta = 'https://api.mainnet-beta.solana.com'
+const HeliusNet = 'https://rpc.helius.xyz/?api-key=bd706e2b-9ee8-49bf-a97e-f14764b99dcb'
 const PaymentNet = 'https://api.metaplex.solana.com/'
 const ToddLewisWallet = new sw3.PublicKey('24ufyLS4jMkAxoUk8pPgWnournhPVfoM2Vm5PdpVJS4r')
 const PaintPersonaWallet = new sw3.PublicKey('FDgSCwGfSALw5Z8Sv98jrKH49e1jnmstZi3NFv4MBqSA')
 const MoneyDAOWallet = new sw3.PublicKey('9buedT3QphNyZ9Yx2xMadQjSEAaLDdTJf1cY5ZJJJp8W')
 
 const MainKeypair = require('../asset/tls-main.js')
+
+// const prod = false
+const prod = true
 
 const Cost = {
   Post: 30000000,
@@ -25,6 +29,16 @@ const Payment = {
   Like: 5000000,
   Subscribe: 270000000
 }
+
+const solConnection = () => new sw3.Connection( prod
+  ? HeliusNet
+  : MainNetBeta
+)
+
+const ownerNet = () => new sw3.Connection( prod
+  ? HeliusNet
+  : PaymentNet
+)
 
 service.w3valid = {}
 
@@ -42,7 +56,7 @@ service.w3valid.validateOwnership = async (userPubkey, mbPubkey) => {
 }
 
 service.w3valid.validateSignatureOnWallet = async (signature, wallet) => {
-  const connection = new sw3.Connection(MainNetBeta)
+  const connection = solConnection()
   const user = new sw3.PublicKey(wallet)
   const signaturesForAddress = await connection.getSignaturesForAddress(user, {limit: 20})
   if(!signaturesForAddress || signaturesForAddress.length === 0) return {error: `No signatures found for ${wallet}`}
@@ -56,7 +70,7 @@ service.w3valid.validateSignatureOnWallet = async (signature, wallet) => {
 }
 
 service.w3valid.transactionDetails = async (signature) => {
-  const connection = new sw3.Connection(MainNetBeta)
+  const connection = solConnection()
   const res = await connection.getParsedTransaction(signature)
   return res
 }
@@ -77,7 +91,7 @@ service.w3valid.validateTx = async (txId, userPubkey) => {
 }
 
 service.w3valid.moneyboy_balance = async (pubkey) => {
-  const connection = new sw3.Connection(PaymentNet)
+  const connection = ownerNet()
   const wallet = pubkey
 
   const metaplex = Metaplex.make(connection)
@@ -173,7 +187,7 @@ service.w3valid.validateLike = async (txId, postId, userId) => {
 }
 
 service.w3valid.getOwner = async tokenPubkey => {
-  const connection = new sw3.Connection(PaymentNet)
+  const connection = ownerNet()
   const data = await connection.getTokenLargestAccounts(new sw3.PublicKey(tokenPubkey))
   const ownerTokenKey = data.value[0].address
   const parsedData = await connection.getParsedAccountInfo(ownerTokenKey)
