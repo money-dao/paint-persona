@@ -28,6 +28,9 @@ const signup = () => {
         userId
       })
       console.log(res)
+      if(res.msg && res.msg == 'done'){
+        location.hash='#hub'
+      }
     } catch (err) {
       console.error(err)
     }

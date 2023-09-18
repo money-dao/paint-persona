@@ -19,7 +19,7 @@ const Cost = {
   Post: 30000000,
   Like: 6000000,
   Subscribe: 300000000,
-  Signup: 10000000000,
+  Signup: 1000000000,
   // Donation: 2500000000
 }
 

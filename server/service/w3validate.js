@@ -21,7 +21,7 @@ const Cost = {
   Post: 30000000,
   Like: 6000000,
   Subscribe: 300000000,
-  Signup: 10000000000,
+  Signup: 1000000000,
   // Donation: 2500000000
 }
 
@@ -147,7 +147,7 @@ service.w3valid.validateSignup = async (txId, userId) => {
   valid = await service.w3valid.validateTx(txId, userId)
   if(!valid) return {error: 'Error: Failed to validate tx'}
   if(valid.error) return valid
-  if(valid.sent !== Cost.Signup) return {error: 'Error: Amount is incorrect'}
+  if(valid.sent !== Cost.Signup) return {error: 'Error: Amount is incorrect', sent: valid.sent, cost: Cost.Signup}
   return valid
 }
 
