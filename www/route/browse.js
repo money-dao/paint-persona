@@ -43,7 +43,7 @@ module.exports = () => {
           </div>
         `),
         el.card('s12 black white-text', `             
-          <p><b>Cost</b></p>
+          <p><b>React</b></p>
           <p class="flex-center v-align">${el.icon('thumb_up')} ${el.cost('0.006', 18)}</p>
         `)
       ),        

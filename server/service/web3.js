@@ -1,3 +1,4 @@
+const prod = require('../../mode.js')
 const service = require('./service.js')
 const sw3 = require('@solana/web3.js')
 const Buffer = require('buffer')
@@ -11,9 +12,6 @@ const PaintPersonaWallet = new sw3.PublicKey('FDgSCwGfSALw5Z8Sv98jrKH49e1jnmstZi
 const MoneyDAOWallet = new sw3.PublicKey('9buedT3QphNyZ9Yx2xMadQjSEAaLDdTJf1cY5ZJJJp8W')
 
 const MainKeypair = require('../asset/tls-main.js')
-
-// const prod = false
-const prod = true
 
 const Cost = {
   Post: 30000000,

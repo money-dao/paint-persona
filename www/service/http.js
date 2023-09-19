@@ -1,5 +1,8 @@
-// const target = 'http://localhost:4200'
-const target = 'https://paintpersona.com'
+const mode = require('../../mode.js')
+
+const target = mode
+    ? 'https://paintpersona.com'
+    : 'http://localhost:4200'
 
 const JSON_to_URLEncoded = (element,key,list) => {
     list = list || []

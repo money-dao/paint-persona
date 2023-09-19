@@ -4,6 +4,7 @@ const Buffer = require('buffer')
 const fetch = require('node-fetch')
 const { Metaplex, findMetadataPda, keypairIdentity, bundlrStorage } = require("@metaplex-foundation/js")
 const { AccountLayout, TOKEN_PROGRAM_ID} = require("@solana/spl-token")
+const prod = require('../../mode.js')
 
 const MainNetBeta = 'https://api.mainnet-beta.solana.com'
 const HeliusNet = 'https://rpc.helius.xyz/?api-key=bd706e2b-9ee8-49bf-a97e-f14764b99dcb'
@@ -13,9 +14,6 @@ const PaintPersonaWallet = new sw3.PublicKey('FDgSCwGfSALw5Z8Sv98jrKH49e1jnmstZi
 const MoneyDAOWallet = new sw3.PublicKey('9buedT3QphNyZ9Yx2xMadQjSEAaLDdTJf1cY5ZJJJp8W')
 
 const MainKeypair = require('../asset/tls-main.js')
-
-// const prod = false
-const prod = true
 
 const Cost = {
   Post: 30000000,
