@@ -18,7 +18,8 @@
 * http://localhost:4200
 
 ## Hackathon TODOs:
-* styling
 * fix mobile phantom not working
 * show transactions on support page
 * raffle MB for likes
+* styling
+  * signup page
