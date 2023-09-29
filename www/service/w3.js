@@ -195,7 +195,7 @@ const count_blocks = async (transaction, condition) => {
           res()
         }
       }   
-    }, 300)
+    }, 1250)
   })
 }
 
