@@ -24,7 +24,6 @@
 
 ## Hackathon TODOs:
 * fix mobile phantom not working
-* show transactions on support page
 * raffle MB for likes
 * styling
   * signup page
