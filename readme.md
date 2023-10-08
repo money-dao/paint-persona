@@ -6,11 +6,11 @@
 2. Create a Solana web3 Keypair
 
 * `/www/service/db_key.js`
-** export Firebase config object
+  * export Firebase config object
 * `/server/asset/fbkey.js`
-** export Firebase Admin SDK private key
+  * export Firebase Admin SDK private key
 * `/server/asset/tls-main.js`
-** export solana web3 Keypair object
+  * export solana web3 Keypair object
 
 ## To run:
 * npm i
