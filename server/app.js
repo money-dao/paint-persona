@@ -14,7 +14,6 @@ require('./route/like.js')
 // require('./route/subscribe.js')
 require('./route/browse.js')
 require('./route/signup.js')
-require('./route/checkmember.js')
 
 /* start server */
 server.serve('4200')

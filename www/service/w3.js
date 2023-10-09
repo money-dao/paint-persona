@@ -42,12 +42,7 @@ const connect = async () => {
     data`connected`(true)
     await balance()
     await moneyboy_balance()
-    const isMember = await http.post('checkmember', {userId: resp.publicKey.toString()})
-    if(isMember.error) location.hash = '#signup'
-    else {
-      location.hash = '#hub'
-      data`member`(isMember)
-    }
+    location.hash = '#hub'
     return resp.publicKey
   } catch (err) {
       // { code: 4001, message: 'User rejected the request.' }

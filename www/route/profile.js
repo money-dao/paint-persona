@@ -9,8 +9,6 @@ module.exports = () => {
   const profile = data`profile`()
   if(!profile) return profileNotFound()
   const pubkey = data`pubkey`()
-  const member = data`member`()
-  if(!member) return location.hash = '#signup'
 
   const getIsOwned = () => {
     const nfts = data`nfts`()

@@ -68,11 +68,6 @@ service.web3.signup = async (txId, userId) => {
   return {msg: 'done'}
 }
 
-service.web3.checkMembership = async userId => {
-  const isMember = await service.db.read(`/member/${userId}`)
-  return isMember || {error: 'Member not found'}
-}
-
 service.web3.post = async (txId, post) => {
   const valid = await service.w3valid.validatePost(txId, post)
   if(valid.error) return valid  
