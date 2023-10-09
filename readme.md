@@ -23,6 +23,7 @@
 * mode.js export true
 
 ## Hackathon TODOs:
+* remove entry cost
 * fix mobile phantom not working
 * raffle MB for likes
 * styling
