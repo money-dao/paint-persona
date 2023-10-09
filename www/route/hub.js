@@ -6,8 +6,6 @@ const http = require('../service/http.js')
 const hub = () => {
   const pubkey = data`pubkey`()
   if(!pubkey) return location.hash = '#'
-  const member = data`member`()
-  if(!member) return location.hash = '#signup'
 
   const nfts = data`nfts`()
   const accounts = [...nfts.boys, ...nfts.girls]

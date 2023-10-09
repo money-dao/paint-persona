@@ -8,8 +8,6 @@ module.exports = () => {
   
   const profile = data`profile`()
   if(!profile) return profileNotFound()
-  const member = data`member`()
-  if(!member) return location.hash = '#signup'
 
   let page = 0
   const browsePosts = async () => {
