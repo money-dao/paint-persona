@@ -68,14 +68,23 @@ const send_nft = async (mintPubkey, to) => {
   console.log(mintPubkey, to)
   let senderATA = await spl.getAssociatedTokenAddress(mintPubkey, PaintPersonaWallet)
   console.log('sender', senderATA)
-  let recieverATA = await spl.getAssociatedTokenAddress(mintPubkey, to)
-  if(!recieverATA)
+  try {
     recieverATA = await spl.createAssociatedTokenAccount(
       connection, // connection
       MainKeypair, // fee payer
       mintPubkey, // mint
       to // owner,
     )
+  } catch(createTAError) {
+    try {
+      recieverATA = await spl.getAssociatedTokenAddress(mintPubkey, to)  
+    } catch(getTAError) {
+      console.error('Error sending NFT')
+      console.error(createTAError)
+      console.error(getTAError)
+      return null
+    }
+  }
   console.log('reciever', recieverATA)
   const txhash = await spl.transferChecked(
     connection, // connection
@@ -242,7 +251,7 @@ service.web3.raffle = async () => {
   })
   const winner = fromlist(users)
   console.log('winner', winner)
-  const rafflePromo = await service.web3.checkRaffle()
+  let rafflePromo = await service.db.read(`/promo/raffle`)
   console.log('rafflePromo', rafflePromo)
   const sig = await send_nft(rafflePromo.pubkey, winner)
   await service.db.push(`/reward/raffle`, sig)
