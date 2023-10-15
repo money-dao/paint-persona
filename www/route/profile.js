@@ -13,6 +13,7 @@ module.exports = () => {
   const getIsOwned = () => {
     const nfts = data`nfts`()
     const accounts = [...nfts.boys, ...nfts.girls]
+    console.log(profile)
     const mbPubkey = profile.nft.address.toString()
     return accounts.find(nft => mbPubkey == nft.address.toString())
   }

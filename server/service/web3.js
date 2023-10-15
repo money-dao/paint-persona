@@ -1,6 +1,7 @@
 const prod = require('../../mode.js')
 const service = require('./service.js')
 const sw3 = require('@solana/web3.js')
+const spl = require('@solana/spl-token')
 const Buffer = require('buffer')
 service.web3 = {}
 
@@ -33,7 +34,8 @@ const solConnection = () => new sw3.Connection( prod
 
 const ownerNet = () => new sw3.Connection( prod
   ? HeliusNet
-  : PaymentNet
+  : PaymentNet,
+  "confirmed"
 )
 
 const send_tx = async (amount, fromKeypair, toPubkey) => {
@@ -57,6 +59,36 @@ const send_tx = async (amount, fromKeypair, toPubkey) => {
   const status =  await connection.getSignatureStatus(signature)
   console.log('status', status)
   return signature
+}
+
+const send_nft = async (mintPubkey, to) => {
+  const connection = ownerNet()
+  mintPubkey = new sw3.PublicKey(mintPubkey)
+  to = new sw3.PublicKey(to)
+  console.log(mintPubkey, to)
+  let senderATA = await spl.getAssociatedTokenAddress(mintPubkey, PaintPersonaWallet)
+  console.log('sender', senderATA)
+  let recieverATA = await spl.getAssociatedTokenAddress(mintPubkey, to)
+  if(!recieverATA)
+    recieverATA = await spl.createAssociatedTokenAccount(
+      connection, // connection
+      MainKeypair, // fee payer
+      mintPubkey, // mint
+      to // owner,
+    )
+  console.log('reciever', recieverATA)
+  const txhash = await spl.transferChecked(
+    connection, // connection
+    MainKeypair, // payer
+    senderATA, // from (should be a token account)
+    mintPubkey, // mint
+    recieverATA, // to (should be a token account)
+    MainKeypair, // from's owner
+    1, // amount, if your deciamls is 8, send 10^8 for 1 token
+    0 // decimals
+  )
+  console.log('nft sent')
+  return txhash
 }
 
 service.web3.signup = async (txId, userId) => {
@@ -129,13 +161,18 @@ service.web3.like = async (txId, postId, userId) => {
   await service.db.write(`/post/${postId}/likes`, likes)
   await service.db.write(`/profile/${profileKey}/info/likes`, profileLikes)
   await service.db.write(`/signature/like/${txId}`, postId)
+  //raffle
+  let raffleLikeCount = await service.db.read(`/raffle/${userId}/likes`)
+  raffleLikeCount = raffleLikeCount || 0
+  raffleLikeCount++
+  await service.db.write(`/raffle/${userId}/likes`, raffleLikeCount)
   //payment to owner
   const postOwner = await service.w3valid.getOwner(valid.post.mb.key)
   console.log(`like: sending payment to owner ${postOwner}`)
   const rewardSignature = await send_tx(Payment.Like, MainKeypair, new sw3.PublicKey(postOwner))
   console.log(`like: reward signature ${rewardSignature}`)
   await service.db.push('reward/like', rewardSignature)
-  return {likes}
+  return {likes, raffleLikeCount}
 }
 
 let posts = {}, postsByLikes = []
@@ -160,5 +197,59 @@ service.web3.browse = async (page) => {
   const res = postsByLikes.slice(start, end)
   return res
 }
+
+const fromlist = ar => ar[Math.floor(ar.length * Math.random())]
+
+service.web3.checkRaffle = async () => {
+  let rafflePromo = await service.db.read(`/promo/raffle`)
+  if(!rafflePromo) {
+    console.log('New Raffle Prize')
+    const inv = await service.w3valid.moneyboy_balance(PaintPersonaWallet)
+    const rafflePool = [...inv.boys, ...inv.girls]
+    if(rafflePool.length === 0) return console.log('NO MONEY BOYS OR MONEY GIRLS FOR RAFFLE!')
+    console.log(rafflePool.length)
+    rafflePromo = fromlist(rafflePool)
+    console.log(rafflePromo)
+    const date = new Date();
+    date.setDate(date.getDate() + 2 * 7);
+    rafflePromo = {
+      date: date.toString(),
+      img: rafflePromo.image,
+      title: rafflePromo.name,
+      pubkey: rafflePromo.address.toString()
+    }
+    await service.db.write(`/promo/raffle`, rafflePromo)
+    console.log('Raffle Prize Saved:', rafflePromo)
+  }
+  if(new Date(rafflePromo.date) <= new Date()){
+    await service.web3.raffle()
+    return service.web3.checkRaffle()
+  } else
+    console.log('raffle not ready yet')
+  
+  return rafflePromo
+}
+service.web3.checkRaffle()
+
+service.web3.raffle = async () => {
+  let raffle = await service.db.read(`/raffle`)
+  let users = Object.keys(raffle)
+  let tickets = []
+  users.forEach(userId => {
+    const count = raffle[userId].likes
+    const ticketsAmt = Math.floor(count / 9)
+    for (let i = 0; i < ticketsAmt + 1; i++) tickets.push(userId)
+  })
+  const winner = fromlist(users)
+  console.log('winner', winner)
+  const rafflePromo = await service.web3.checkRaffle()
+  console.log('rafflePromo', rafflePromo)
+  const sig = await send_nft(rafflePromo.pubkey, winner)
+  await service.db.push(`/reward/raffle`, sig)
+  await service.db.write(`/promo/raffle`, null)
+  await service.db.write(`/raffle`, null)
+  return {winner}
+}
+// console.log(service.web3.raffle())
 
 module.exports = {}

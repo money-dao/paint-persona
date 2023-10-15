@@ -9,5 +9,6 @@ router.init('#pagenotfound', {
   '#signup': require('./route/signup.js'),
   '#support': require('./route/support.js'),
   '#profilenotfound': require('./route/profilenotfound.js'),
-  '#pagenotfound': require('./route/pagenotfound.js')
+  '#pagenotfound': require('./route/pagenotfound.js'),
+  '#raffle': require('./route/raffle.js')
 })
