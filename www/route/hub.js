@@ -2,6 +2,7 @@ const el = require('../el/_el.js')
 const event = require('../service/event.js')
 const data = require('../service/data.js')
 const http = require('../service/http.js')
+const battler = require('../service/diamondbattler.js')
 
 const hub = () => {
   const pubkey = data`pubkey`()

@@ -17,6 +17,7 @@ const PaintPersona = new PublicKey('FDgSCwGfSALw5Z8Sv98jrKH49e1jnmstZi3NFv4MBqSA
 const Cost = {
   Post: 30,
   Like: 6,
+  DiamondBattle: 6,
   Subscribe: 300,
   Signup: 1000
 }
@@ -173,6 +174,107 @@ const send_tx = async (amount, to) => {
   console.log('SIGNATURE', signature, status)
   return signature
 }
+
+const ppATA = nft => splToken.getAssociatedTokenAddress(nft, PaintPersona)
+
+const check_nft_account = async (toATA) => {
+  const connection = new Connection(PaymentNet)
+  try {
+    const account = await splToken.getAccount(
+      connection,
+      toATA,
+      "confirmed",
+      TOKEN_PROGRAM_ID
+    )
+
+    return account
+  } catch (thrownObject) {
+    
+  }
+}
+
+const create_nft_account = async (nft, to) => {
+  if(!to) to = PaintPersona
+  const from = data`pubkey`()
+  const provider = get_provider()
+  const connection = new Connection(PaymentNet)
+  const toATA = await splToken.getAssociatedTokenAddress(nft, to)
+  console.log(toATA.toString())
+  const checkAccount = await check_nft_account(toATA)
+  if(checkAccount) return {signature: null, toATA}
+  const transaction = new solanaWeb3.Transaction()
+  transaction.add(splToken.createAssociatedTokenAccountInstruction(
+    from,
+    toATA,
+    to,
+    nft,
+    splToken.TOKEN_PROGRAM_ID,
+    splToken.ASSOCIATED_TOKEN_PROGRAM_ID
+  ))
+  let blockhash = (await connection.getLatestBlockhash('finalized')).blockhash;
+  transaction.recentBlockhash = blockhash
+  transaction.feePayer = from
+
+  console.log('tx', transaction)
+  // Sign transaction, broadcast, and confirm
+  const { signature } = await provider.signAndSendTransaction(transaction)
+  let status
+  await count_blocks(transaction, async () => {
+    status =  await connection.getSignatureStatus(signature)
+    console.log('loading...', status.value)
+    if(status.value && status.value.confirmationStatus === 'finalized')
+      return true
+    return false
+  })
+  console.log('SIGNATURE', signature, status)
+  return {signature, toATA}
+}
+
+const nft_tx = async (nft, amount, to) => {
+  if(!to) to = PaintPersona
+  const from = data`pubkey`()
+  const provider = get_provider()
+  const createATA = await create_nft_account(nft, to)
+  const connection = new Connection(PaymentNet)
+  const transaction = new solanaWeb3.Transaction()
+  const fromATA = await splToken.getAssociatedTokenAddress(nft, from)
+  console.log(from, to, nft, fromATA, createATA.toATA)
+  const lamports = (solanaWeb3.LAMPORTS_PER_SOL * 0.001) * amount
+  transaction.add(
+    solanaWeb3.SystemProgram.transfer({
+      fromPubkey: from,
+      toPubkey: to,
+      lamports
+    })
+  )
+  transaction.add(
+    splToken.createTransferInstruction(
+      fromATA,
+      createATA.toATA,
+      from,
+      1,
+      [],
+      splToken.TOKEN_PROGRAM_ID
+    )
+  )
+  let blockhash = (await connection.getLatestBlockhash('finalized')).blockhash;
+  transaction.recentBlockhash = blockhash
+  transaction.feePayer = from
+
+  console.log('tx', transaction)
+  // Sign transaction, broadcast, and confirm
+  const { signature } = await provider.signAndSendTransaction(transaction)
+  let status
+  await count_blocks(transaction, async () => {
+    status =  await connection.getSignatureStatus(signature)
+    console.log('loading...', status.value)
+    if(status.value && status.value.confirmationStatus === 'finalized')
+      return true
+    return false
+  })
+  console.log('SIGNATURE', signature, status)
+  return {signature, createATASignature}
+}
  
 const count_blocks = async (transaction, condition) => {
   const network = PaymentNet
@@ -196,5 +298,5 @@ const count_blocks = async (transaction, condition) => {
 
 // window.nftfn = sk => solanaWeb3.Keypair.fromSecretKey(Uint8Array.from(sk)).publicKey.toString()
 module.exports = {
-  connect, balance, moneyboy_balance, send_tx, Cost, get_nfts
+  connect, balance, moneyboy_balance, send_tx, nft_tx, Cost, get_nfts, ppATA, check_nft_account
 }

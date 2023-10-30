@@ -5,6 +5,7 @@ require('./service/service.js')
 require('./service/db.js')
 require('./service/w3validate.js')
 require('./service/web3.js')
+require('./service/diamondbattler.js')
 
 /* routes */
 require('./route/loadProfile.js')

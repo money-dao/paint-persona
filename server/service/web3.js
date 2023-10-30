@@ -17,6 +17,7 @@ const MainKeypair = require('../asset/tls-main.js')
 const Cost = {
   Post: 30000000,
   Like: 6000000,
+  DiamondBattle: 6000000,
   Subscribe: 300000000,
   Signup: 1000000000,
   // Donation: 2500000000
@@ -239,6 +240,7 @@ service.web3.checkRaffle = async () => {
   return rafflePromo
 }
 service.web3.checkRaffle()
+setInterval(() => service.web3.checkRaffle(), 1000 * 60 * 60 * 6) //check four times daily
 
 service.web3.raffle = async () => {
   let raffle = await service.db.read(`/raffle`)
@@ -260,5 +262,9 @@ service.web3.raffle = async () => {
   return {winner}
 }
 // console.log(service.web3.raffle())
+
+service.web3.joinDiamondBattleQue = async (txId, userId, nftId) => {
+  
+}
 
 module.exports = {}

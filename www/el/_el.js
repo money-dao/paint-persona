@@ -15,7 +15,9 @@ const nav = require('./nav.js')
 const loader = require('./loader.js')
 const icon = require('./icon.js')
 const sol = require('./sol.js')
+const modal = require('./modal.js')
 const cost = require('./cost.js')
+const range = require('./range.js')
 const tx_processing = require('./tx_processing.js')
 
 module.exports = {
@@ -23,5 +25,5 @@ module.exports = {
   collapible, collapse_li, route, col,
   swag_nav, swag_text, post,
   nav, loader, icon, sol, cost,
-  tx_processing
+  tx_processing, range, modal
 }

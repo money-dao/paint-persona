@@ -43,7 +43,7 @@ module.exports = () => {
         el.card('s12 black white-text', `             
           <p><b>React</b></p>
           <p class="flex-center v-align">${el.icon('thumb_up')} ${el.cost('0.006', 18)}</p>
-          <p><a href="#raffle"><b>Raffle</b></a></p>
+          <h3><a href="#raffle"><b>Raffle</b></a></h3>
         `),
       ),        
       el.col('s12 m9',

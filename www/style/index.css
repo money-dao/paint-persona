@@ -188,3 +188,52 @@ a:focus {
     height: 555px;
   }
 }
+
+.bar-thin {
+  height: 18px;
+}
+
+.bar-thick {
+  height: 27px;
+}
+
+.mobile-card {
+  max-width: 300px;
+}
+
+.progress p {
+  z-index: 2;
+  position: absolute;
+  padding-left: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.card-thin {
+  margin-bottom: 3px;
+}
+
+.card-thin .card-content {
+  padding: 3px 12px;
+  margin-bottom: 0;
+}
+
+.modal-bg {
+  display: none;
+}
+
+.modal-bg.open {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+.modal-bg.open .modal {
+  display: block;
+  top: 5%;
+}
