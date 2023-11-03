@@ -234,11 +234,11 @@ const nft_tx = async (nft, amount, to) => {
   if(!to) to = PaintPersona
   const from = data`pubkey`()
   const provider = get_provider()
-  const createATA = await create_nft_account(nft, to)
+  const createATASignature = await create_nft_account(nft, to)
   const connection = new Connection(PaymentNet)
   const transaction = new solanaWeb3.Transaction()
   const fromATA = await splToken.getAssociatedTokenAddress(nft, from)
-  console.log(from, to, nft, fromATA, createATA.toATA)
+  console.log(from, to, nft, fromATA, createATASignature.toATA)
   const lamports = (solanaWeb3.LAMPORTS_PER_SOL * 0.001) * amount
   transaction.add(
     solanaWeb3.SystemProgram.transfer({
@@ -250,7 +250,7 @@ const nft_tx = async (nft, amount, to) => {
   transaction.add(
     splToken.createTransferInstruction(
       fromATA,
-      createATA.toATA,
+      createATASignature.toATA,
       from,
       1,
       [],

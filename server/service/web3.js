@@ -3,6 +3,7 @@ const service = require('./service.js')
 const sw3 = require('@solana/web3.js')
 const spl = require('@solana/spl-token')
 const Buffer = require('buffer')
+const fetch = require('node-fetch')
 service.web3 = {}
 
 const MainNetBeta = 'https://api.mainnet-beta.solana.com'
@@ -263,8 +264,65 @@ service.web3.raffle = async () => {
 }
 // console.log(service.web3.raffle())
 
-service.web3.joinDiamondBattleQue = async (txId, userId, nftId) => {
-  
+service.web3.joinDiamondBattleQue = async (txId, userId) => {
+  //check for repeating requests
+  const dbs = await service.db.read(`signature/receivedDB/${txId}`)
+  if(dbs) return {error: 'signature already processed'}
+  //check that the signature sent a diamondboy
+  const valid = await service.w3valid.validateDiamondBoy(txId, userId)
+  if(!valid) return {error: 'Error validating diamond boy tx'}
+  const nftId = valid.nft.mintAddress.toString()
+  const date = new Date().toDateString()
+  const uri = valid.nft.uri
+  await service.db.write(`signature/receivedDB/${nftId}`, {date, txId})
+  await service.db.write(`diamondbattle/que/${nftId}`, {nftId, date, userId, uri})
+  const res = await service.web3.checkDiamondBattleQue()
+  return {res, nftId, date}
 }
+
+const findEnemy = (item, ar) => ar.find(i => item.userId !== i.userId)
+
+service.web3.checkDiamondBattleQue = async () => {
+  //check que
+  let que = await service.db.read(`diamondbattle/que`)
+  if(!que) return {msg: "No compatible battles available.", queLength: 0}
+  que = Object.values(que)
+  //find enemies
+  let enemy, battleReady 
+    = que.find(i => enemy = findEnemy(i, que))
+  //init enemies
+  if(battleReady && enemy){
+    console.log('battle ready', battleReady, enemy)
+    const players = await Promise.all([battleReady, enemy].map(async i => {
+      const r = await fetch(i.uri)
+      const db = await r.json()
+      db.address = new sw3.PublicKey(i.nftId)
+      return db
+    }))
+    //battle
+    const battle = service.battler.battle(...players)
+    let winner = battle.players[0].hp === 0 ? battleReady : enemy
+    console.log('winner', winner)
+    //save battle on server
+    const battleId = await service.db.push(`diamondbattle/report`, battle)
+    await service.db.write(`diamondbattle/history/${battleReady.nftId}/${battleId}`, {winner: winner.userId, userId: battleReady.userId, enemyId: enemy.userId})
+    await service.db.write(`diamondbattle/history/${enemy.nftId}/${battleId}`, {winner: winner.userId, userId: enemy.userId, enemyId: battleReady.userId})
+    //send dbs to winner
+    return {msg: "battle complete"}
+  } else {
+    console.log('no enemy diamond boys available', que)
+    return {msg: "No compatible battles available.", queLength: que.length}
+  }
+}
+
+// service.web3.joinDiamondBattleQue(
+  // "gGiJjPWoCydS4g1CWuaAxnpvCJMfHtqbhwRByEjkXZ34uMLx2uTyWE6XwGog8jfntMfEJ6FCqzZh3c9RqRei8L8", 
+  // "24ufyLS4jMkAxoUk8pPgWnournhPVfoM2Vm5PdpVJS4r"
+// )
+// service.web3.joinDiamondBattleQue(
+  // "4GsGfhJVVqcEBCXDEC6v6a3zhaqTeorfZm6LK47wC3frjdyHpNpphAKNTB6U2guhL6ZuvJgfT3mdoPSvHkJCZEhT",
+  // "2BLHWKuts7Nn5cRr1NYtCd8DV644RomkFVfKg5RPx4nP"
+// )
+service.web3.checkDiamondBattleQue()
 
 module.exports = {}

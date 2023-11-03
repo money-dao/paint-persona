@@ -81,11 +81,56 @@ service.w3valid.validateTx = async (txId, userPubkey) => {
   const tlValid = await service.w3valid.validateSignatureOnWallet(txId, PaintPersonaWallet.toString())
   if(tlValid.error) return tlValid
   const details = await service.w3valid.transactionDetails(txId)
+  console.log(details)
 
   const senderAmount = details.meta.postBalances[0] - details.meta.preBalances[0]
   const receiverAmount = details.meta.postBalances[1] - details.meta.preBalances[1]
   
   return {sent: receiverAmount}
+}
+
+service.w3valid.validateNFT = async (txId, userPubkey, nftName) => {
+  //validate pubkey sent finished tx
+  console.log('validate nft', userPubkey, PaintPersonaWallet.toString())
+  const details = await service.w3valid.transactionDetails(txId)
+  
+  const senderPre = details.meta.preTokenBalances.find(detail => detail.owner === userPubkey)
+  const senderPost = details.meta.postTokenBalances.find(detail => detail.owner === userPubkey)
+  const receiverPost = details.meta.postTokenBalances.find(detail => detail.owner === PaintPersonaWallet.toString())
+
+  if(!senderPre || !senderPost) {
+    console.error('Invalid NFT TX', details)
+    return {error: 'Invalid NFT TX', details}
+  }
+
+  const mint = senderPre.mint
+  const res = await service.w3valid.nftInfo(new sw3.PublicKey(mint))
+  if(!res) return console.error('invalid nft info')
+  const nft = res[0]
+  
+  if(nft.name.substring(0, nftName.length) === nftName){
+    console.log('is a diamondboy')
+  }
+  else {
+    console.error({error: 'nft name does not match', nftName, given: nft.name})
+  }
+
+  const sent = receiverPost.uiTokenAmount.amount === '1'
+  if(!sent) return console.error('issue reading nft balance')
+  
+  return {valid: true, nft}
+}
+
+service.w3valid.nftInfo = async (...mints) => {
+  const connection = ownerNet()
+
+  const metaplex = Metaplex.make(connection)
+      .use(keypairIdentity(PaintPersonaWallet))
+      .use(bundlrStorage())
+  
+  const nfts = await metaplex.nfts().findAllByMintList({ mints })
+
+  return nfts
 }
 
 service.w3valid.moneyboy_balance = async (pubkey) => {
@@ -192,5 +237,12 @@ service.w3valid.getOwner = async tokenPubkey => {
   const owner = parsedData.value.data.parsed.info.owner
   return owner
 }
+
+service.w3valid.validateDiamondBoy = (signature, userId) => service.w3valid.validateNFT(signature, userId, 'Solana Diamond Boys')
+
+// service.w3valid.validateDiamondBoy(
+  // "gGiJjPWoCydS4g1CWuaAxnpvCJMfHtqbhwRByEjkXZ34uMLx2uTyWE6XwGog8jfntMfEJ6FCqzZh3c9RqRei8L8", 
+  // "24ufyLS4jMkAxoUk8pPgWnournhPVfoM2Vm5PdpVJS4r"
+// )
 
 module.exports = service.w3valid
