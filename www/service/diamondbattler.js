@@ -208,9 +208,9 @@ const traits = {
   }
 }
 
-service.battler = {
-  toStats, battle, traits
-}
+// service.battler = {
+//   toStats, battle, traits
+// }
 
 module.exports = {
   toStats, battle, traits

@@ -240,12 +240,12 @@ service.web3.checkRaffle = async () => {
   
   return rafflePromo
 }
-service.web3.checkRaffle()
-setInterval(() => service.web3.checkRaffle(), 1000 * 60 * 60 * 6) //check four times daily
+// service.web3.checkRaffle()
+// setInterval(() => service.web3.checkRaffle(), 1000 * 60 * 60 * 6) //check four times daily
 
 service.web3.raffle = async () => {
   let raffle = await service.db.read(`/raffle`)
-  let users = Object.keys(raffle)
+  let users = Object.keys(raffle || {})
   let tickets = []
   users.forEach(userId => {
     const count = raffle[userId].likes
