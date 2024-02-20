@@ -43,7 +43,7 @@ const connect = async () => {
     data`connected`(true)
     await balance()
     await moneyboy_balance()
-    location.hash = '#hub'
+    location.hash = '#battle'
     return resp.publicKey
   } catch (err) {
       // { code: 4001, message: 'User rejected the request.' }
@@ -136,8 +136,8 @@ const moneyboy_balance = async () => {
 
   const accounts = [...money.boys, ...money.girls]
   const mbAr = accounts.map(nft => nft.address.toString())
-  const revenue = await http.post('loadrevenue', {mbAr})
-  accounts.forEach(nft => nft.revenue = revenue[nft.address.toString()])
+  // const revenue = await http.post('loadrevenue', {mbAr})
+  // accounts.forEach(nft => nft.revenue = revenue[nft.address.toString()])
  
   data`nfts`(money)
   console.log(money)
@@ -273,7 +273,7 @@ const nft_tx = async (nft, amount, to) => {
     return false
   })
   console.log('SIGNATURE', signature, status)
-  return {signature, createATASignature}
+  return {signature, createATASignature, transaction}
 }
  
 const count_blocks = async (transaction, condition) => {

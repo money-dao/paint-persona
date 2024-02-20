@@ -7,16 +7,10 @@
 
 * `/www/service/db_key.js`
   * export Firebase config object
-* `/server/asset/fbkey.js`
-  * export Firebase Admin SDK private key
-* `/server/service/db.js`
-  * change databaseURL to firebase database url
-* `/server/asset/tls-main.js`
-  * export solana web3 Keypair object
-* `/server/service/web3.js`
-  * change `PaintPersonaWallet` pubkey to your local PaintPersonaWallet pubkey
-* `/web/service/w3.js`
-  * change `PaintPersona` pubkey to your local PaintPersonaWallet pubkey
+* `/server/asset/keys`
+  * export keys.Keypair - solana web3 Keypair object
+  * export keys.Firebase - ServiceAccount object {databaseURL, credential}
+  * export keys.HeliusNet - helius api 'https://rpc.helius.xyz/?api='
 
 ## To run:
 * npm i

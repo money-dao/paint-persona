@@ -10,6 +10,15 @@ const battle = () => {
   const pubkey = data`pubkey`()
   if(!pubkey) return location.hash = '#'
 
+  const testJoinQue = async () => {
+    const res = await http.post('joinQue', {
+      txId: "4C8rBeKuTGh8TjKmQakk38ReC8nCZeeyw57tjgifuzLYLZbdHFktbS2jTgRZzK1pkx1jpQTSWrg1VfX3W51WD6Pe",
+      userId: "2BLHWKuts7Nn5cRr1NYtCd8DV644RomkFVfKg5RPx4nP"
+    })
+    console.log('res', res)
+  }
+  testJoinQue()
+
   const nfts = data`nfts`()
 
   const refresh = async () => {
@@ -83,20 +92,16 @@ const battle = () => {
       let signature
       try {
         signature = await w3.nft_tx(db.address, w3.Cost.DiamondBattle)
+        console.log('signature', signature)
+        
+        const res = await http.post('joinQue', {
+          txId: signature.signature,
+          userId: pubkey.toString()
+        })
+        console.log('res', res)
       } catch (err) {
         console.error(err)
         return null
-      }
-      // const userId = data`pubkey`().toString()
-      try {
-        // const res = await http.post('like', {
-        //   txId: signature,
-        //   postId: loadedPost?.id,
-        //   userId
-        // })
-        console.log(res)
-      } catch (err) {
-        console.error(err)
       }
     })
     const closeId = event.click(() => {
@@ -135,6 +140,6 @@ const battle = () => {
     )
   )
   
-  return el.nav(route, true, true)
+  return el.nav(route, true, false)
 }
 module.exports = battle

@@ -12,6 +12,7 @@
     "firebase-admin": "^11.10.1",
     "node-fetch": "^2.7.0",
     "node-polyfill-webpack-plugin": "^2.0.1",
+    "tls-toolkit": "^1.0.2",
     "toml": "^3.0.0",
     "webpack-node-externals": "^3.0.0"
   },

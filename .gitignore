@@ -1,6 +1,4 @@
 /node_modules
 /dist
 package-lock.json
-/www/service/db_key.js
-/server/asset/fbkey.js
-/server/asset/tls-main.js
+/server/asset/keys.js

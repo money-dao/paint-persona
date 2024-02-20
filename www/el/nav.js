@@ -40,10 +40,10 @@ const nav = (route, hasFooter, hasSearch) => {
   return `
     <nav id="${navId}">
       <div class="nav-wrapper">
-        <a id="wallet" href="#hub" class="brand-logo">${wallet ? wallet.substring(0, 6) : 'Paint Persona'}</a>
+        <a id="wallet" href="#battle" class="brand-logo">${wallet ? wallet.substring(0, 6) : 'Paint Persona'}</a>
         <ul id="nav-mobile" class="right">
           <li id="connect" class="${pubkey ? '' : 'hide'}"><a href="#battle">Battle</a></li>
-          <li id="connect" class="${pubkey ? '' : 'hide'}"><a href="#raffle">Raffle</a></li>
+          <!--<li id="connect" class="${pubkey ? '' : 'hide'}"><a href="#raffle">Raffle</a></li>-->
           <li id="balance" class="${balance ? '' : 'hide'}"><a>${balance} sol</a></li>
           <li id="connect" class="${pubkey ? 'hide' : ''}"><a id="${connectId}">Connect</a></li>
         </ul>
