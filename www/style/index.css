@@ -17,6 +17,7 @@ body {
 
 nav {
   background: #6288fd !important;
+  margin-bottom: 20px;
 }
 
 button:focus,

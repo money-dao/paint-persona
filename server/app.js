@@ -12,6 +12,7 @@ require('./service/diamondbattler.js')
 // require('./route/subscribe.js')
 // require('./route/browse.js')
 // require('./route/signup.js')
+require('./route/hostreport.js')
 require('./route/joinDiamondQue.js')
 
 /* start server */

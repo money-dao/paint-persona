@@ -22,6 +22,13 @@ const validateDB = async (txId, userId) => {
   }  
 }
 
+service.diamondbattler.hostReport = async id => {
+  console.log(`loading report ${id}`)
+  const report = await service.db.read(`diamondbattle/report/${id}`)
+  if(report) return report
+  return {error: true, msg: "report not found", id}
+}
+
 service.diamondbattler.joinQue = async (txId, userId) => {
   //check for repeating requests
   const dbs = await service.db.read(`signature/receivedDB/${txId}`)
@@ -34,7 +41,7 @@ service.diamondbattler.joinQue = async (txId, userId) => {
   const nftId = valid.nft.mintAddress.toString()
   const date = new Date().toDateString()
   const uri = valid.nft.uri
-  await service.db.write(`signature/receivedDB/${nftId}`, {date, txId})
+  await service.db.write(`signature/receivedDB/${txId}`, {date, nftId})
   await service.db.write(`diamondbattle/que/${nftId}`, {nftId, date, userId, uri})
   const res = await service.diamondbattler.checkQue()
   return {res, nftId, date}
@@ -65,8 +72,11 @@ service.diamondbattler.checkQue = async () => {
     console.log('winner', winner)
     //save battle on server
     const battleId = await service.db.push(`diamondbattle/report`, battle)
-    await service.db.write(`diamondbattle/history/${battleReady.nftId}/${battleId}`, {winner: winner.userId, userId: battleReady.userId, enemyId: enemy.userId})
-    await service.db.write(`diamondbattle/history/${enemy.nftId}/${battleId}`, {winner: winner.userId, userId: enemy.userId, enemyId: battleReady.userId})
+    const date = (new Date()).toUTCString()
+    await service.db.write(`diamondbattle/history/db/${battleReady.nftId}/${battleId}`, date)
+    await service.db.write(`diamondbattle/history/db/${enemy.nftId}/${battleId}`, date)
+    await service.db.write(`diamondbattle/history/u/${battleReady.userId}/${battleId}`, date)
+    await service.db.write(`diamondbattle/history/u/${enemy.userId}/${battleId}`, date)
     //send dbs to winner
     console.log('sending 1/2', battleReady.nftId)
     await service.nft.sendToken(battleReady.nftId, winner.userId)

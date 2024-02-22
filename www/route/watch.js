@@ -5,11 +5,30 @@ const http = require('../service/http.js')
 const battler = require('../service/diamondbattler.js')
 
 const watch = () => {
-  const pubkey = data`pubkey`()
-  if(!pubkey) return location.hash = '#'
+  // const pubkey = data`pubkey`()
+  // if(!pubkey) return location.hash = '#'
 
-  const watch = data`watch`()
-  if(!watch) location.hash = '#battle'  
+  let watch
+  if(!data`watch`() && location.search) {
+    const id = location.search.substring(4)
+    if(id.substring(0,1) == '-'){
+      console.log('id', id)
+      http.post('hostReport', {id}).then(
+        res => {
+          console.log('res', res)
+          watch = data`watch`(res)
+          location.hash = '#'
+          setTimeout(() => location.hash = '#watch',0)
+        },
+        er => locaiton.hash = '#battle'
+      )
+    }
+      return ''
+  } else {
+    watch = data`watch`()
+    if(!watch) location.hash = '#battle'
+  }
+  
   console.log('watch', watch)
   
   const sceneRoundStart = i => {
@@ -210,6 +229,8 @@ const watch = () => {
     )
   )
   
-  return el.nav(route, true, true)
+  const ui = () => el.nav(route, true, true)
+  
+  return ui()
 }
 module.exports = watch

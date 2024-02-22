@@ -10,15 +10,6 @@ const battle = () => {
   const pubkey = data`pubkey`()
   if(!pubkey) return location.hash = '#'
 
-  const testJoinQue = async () => {
-    const res = await http.post('joinQue', {
-      txId: "4C8rBeKuTGh8TjKmQakk38ReC8nCZeeyw57tjgifuzLYLZbdHFktbS2jTgRZzK1pkx1jpQTSWrg1VfX3W51WD6Pe",
-      userId: "2BLHWKuts7Nn5cRr1NYtCd8DV644RomkFVfKg5RPx4nP"
-    })
-    console.log('res', res)
-  }
-  testJoinQue()
-
   const nfts = data`nfts`()
 
   const refresh = async () => {
@@ -134,10 +125,33 @@ const battle = () => {
     `)
   }
   
-  const route = el.route(
-    el.row(
-      nfts.diamonds.map(db => dbcard(db)).join()
+  const selectedDBId = event.el(el => {
+    el.addEventListener('dbselect', e => 
+      el.innerHTML = dbcard(e.detail)
     )
+
+    if(nfts.diamonds) el.innerHTML = dbcard(nfts.diamonds[0])
+  })
+  
+  const route = el.route(
+    el.row(`
+      <div class="center">
+        <button class="waves-effect waves-light btn disabled">Battle</button>
+        <button class="waves-effect waves-light btn">History</button>
+        <button class="waves-effect waves-light btn">Search</button>
+      </div>
+    `),
+    el.row(
+      `<div id="${selectedDBId}"></div>`
+    ),
+    el.row(
+      `<div class="center">`
+      + nfts.diamonds.map(db => {
+        const selectId = event.click(() => event.dispatch`dbselect`(`#${selectedDBId}`, db))
+        return `<button id="${selectId}" class="waves-effect waves-light btn-flat" style="height: 90px"><img src="${db.image}" width="90"></button>`
+      }).join('') +
+      `</div>`
+    ),
   )
   
   return el.nav(route, true, false)
