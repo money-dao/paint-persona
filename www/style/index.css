@@ -20,6 +20,15 @@ nav {
   margin-bottom: 20px;
 }
 
+main {
+  min-height: 100vh;
+  position: relative;
+}
+
+main > .container {
+  padding-bottom: 188px;
+}
+
 button:focus,
 a:focus {
   outline: 3px solid hotpink;
@@ -28,6 +37,11 @@ a:focus {
 
 .page-footer {
   background: #6288fd !important;
+  height: 188px;
+  padding-top: 0;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
 }
 
 .flex {
@@ -158,10 +172,18 @@ a:focus {
   margin-left: 3px;
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 500px) {
   .mb-card .card-title {
     line-height: 21px !important;
     font-size: 21px !important;
+  }
+
+  .page-footer {
+    height: 141px;
+  }
+
+  main > .container {
+    padding-bottom: 141px;
   }
 }
 
@@ -186,7 +208,7 @@ a:focus {
 
 @media screen and (min-width: 400px) {
   .home-tile {
-    height: 555px;
+    height: 333px;
   }
 }
 
@@ -237,4 +259,25 @@ a:focus {
 .modal-bg.open .modal {
   display: block;
   top: 5%;
+}
+
+.dbque .card-content{
+  padding: 0;
+}
+
+.dbque .card-content .row{
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.dbque img{
+  margin: -12px;
+  border-radius: 9px;
+}
+
+.db-inv button {
+  padding: 0;
+  margin: 3px;
+  overflow: unset;
 }

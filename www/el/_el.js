@@ -19,11 +19,13 @@ const modal = require('./modal.js')
 const cost = require('./cost.js')
 const range = require('./range.js')
 const tx_processing = require('./tx_processing.js')
+const battle_nav = require('./battle_nav.js')
 
 module.exports = {
   card, carousel, footer, mb_card, row, search,
   collapsible, collapse_li, route, col,
   swag_nav, swag_text, post,
   nav, loader, icon, sol, cost,
-  tx_processing, range, modal
+  tx_processing, range, modal,
+  battle_nav
 }

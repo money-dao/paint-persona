@@ -13,13 +13,22 @@ const write = (location, obj) => {
   set(ref(db, location), obj)
 }
 
-const read = (location, fn, loop) => {
+const read = async (location, fn, loop) => {
   const db = getDatabase()
-  onValue(ref(db, location), (snapshot) => fn(snapshot.val()), {
+  const res = await onValue(ref(db, location), snapshot => fn(snapshot.val()), {
     onlyOnce: !loop
   })
+  return res
 }
 
+const get = location => new Promise((res, rej) => {
+  try{
+    read(location, val => res(val))
+  } catch (er) {
+    rej()
+  }
+})
+
 module.exports = {
-  read, write
+  read, write, get
 }

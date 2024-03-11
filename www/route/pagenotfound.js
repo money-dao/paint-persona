@@ -8,7 +8,7 @@ module.exports = () => {
     el.card('',
       `<h1>Page not found</h1>
       ${pubkey
-      ? `<a href="#hub">Hub</a>`
+      ? `<a href="#battle">Battler</a>`
       : `<a href="#">Home</a>` 
       }`
     )

@@ -1,7 +1,8 @@
 const mode = require('../../mode.js')
 
 const target = mode
-    ? 'https://paintpersona.com'
+    // ? 'https://paintpersona.com'
+    ? 'http://localhost:4200'
     : 'http://localhost:4200'
 
 const JSON_to_URLEncoded = (element,key,list) => {
@@ -33,6 +34,7 @@ const get = async path => {
     let res = await fetch(path, {
         headers: {
             'Access-Control-Allow-Origin':'*',
+            'Access-Control-Allow-Methods': 'GET'
         }
     })
     return res.json()

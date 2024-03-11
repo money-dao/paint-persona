@@ -16,10 +16,10 @@ module.exports = () => {
     await w3.connect()
   })
 
-  const homeTile = (left, right) => el.row(
-    el.col('s12 m7 l8 home-tile', left),
-    el.col('s12 m5 l4 home-tile', right)
-  )
+  const homeTile = (left, right) => `<div class="row" style="margin-top:10%;">
+    ${el.col('s12 m7 l8 home-tile', left)}
+    ${el.col('s12 m5 l4 home-tile', right)}
+  </div>`
   
   return el.route(
     homeTile(

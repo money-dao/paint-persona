@@ -1,3 +1,6 @@
+let service = {}
+service.battler = {}
+
 const battle = (d1, d2) => {
   const d1Stats = toStats(d1)
   const d2Stats = toStats(d2)
@@ -208,10 +211,8 @@ const traits = {
   }
 }
 
-// service.battler = {
-//   toStats, battle, traits
-// }
+service.battler.toStats = toStats
+service.battler.battle = battle
+service.battler.traits = traits
 
-module.exports = {
-  toStats, battle, traits
-}
+module.exports = service.battler

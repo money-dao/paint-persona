@@ -12,5 +12,7 @@ router.init('#pagenotfound', {
   '#pagenotfound': require('./route/pagenotfound.js'),
   // '#raffle': require('./route/raffle.js'),
   '#battle': require('./route/battle.js'),
+  '#dbhx': require('./route/dbhx.js'),
+  '#dbsearch': require('./route/dbsearch.js'),
   '#watch': require('./route/watch.js')
 })

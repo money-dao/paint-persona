@@ -7,6 +7,7 @@ const { AccountLayout, TOKEN_PROGRAM_ID, createTransferCheckedInstruction, getAs
 
 const data = require('./data.js')
 const http = require('./http.js')
+const db = require('./db.js')
 
 const MainNetBeta = 'https://api.mainnet-beta.solana.com'
 const PaymentNet = 'https://api.metaplex.solana.com/'
@@ -43,6 +44,7 @@ const connect = async () => {
     data`connected`(true)
     await balance()
     await moneyboy_balance()
+    await getQue()
     location.hash = '#battle'
     return resp.publicKey
   } catch (err) {
@@ -52,6 +54,12 @@ const connect = async () => {
 
 const toFixed = (num, fixed) => 
     num.toString().match(new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?'))[0];
+
+const getQue = async () => {
+  const userId = data`pubkey`().toString()
+  const que = await db.get(`diamondbattle/que/${userId}`)
+  data`que`(que || {})
+}
 
 const balance = async () => {
   const pubkey = data`pubkey`()
@@ -267,7 +275,16 @@ const nft_tx = async (nft, amount, to) => {
   let status
   await count_blocks(transaction, async () => {
     status =  await connection.getSignatureStatus(signature)
-    console.log('loading...', status.value)
+    let txStatus = data`tx_status`() || {}
+    txStatus[nft.toString()] = status.value
+    data`tx_status`(txStatus)
+    const txCount = document.body.querySelector(`.${nft.toString()} .count`)
+    if(txCount){
+      console.log(txCount)
+    } else {
+      console.log('Err: Couldnt find txCount')
+    }
+    console.log('loading...', txStatus)
     if(status.value && status.value.confirmationStatus === 'finalized')
       return true
     return false

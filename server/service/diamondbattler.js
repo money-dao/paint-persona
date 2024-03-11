@@ -33,30 +33,43 @@ service.diamondbattler.joinQue = async (txId, userId) => {
   //check for repeating requests
   const dbs = await service.db.read(`signature/receivedDB/${txId}`)
   if(dbs) return {error: 'signature already processed'}
-  console.log('Not processed (good)')
   //check that the signature sent a diamondboy
   const valid = await validateDB(txId, userId)
   if(!valid || valid.error) return valid || {error: 'Error validating diamond boy tx'}
-  console.log('valid valid')
   const nftId = valid.nft.mintAddress.toString()
   const date = new Date().toDateString()
-  const uri = valid.nft.uri
+  const nftRes = await fetch(valid.nft.uri)
+  const data = await nftRes.json()
+  console.log('data', data)
+  const queObj = {
+    date,
+    name: data.name,
+    image: data.image,
+    uri: valid.nft.uri
+  }
   await service.db.write(`signature/receivedDB/${txId}`, {date, nftId})
-  await service.db.write(`diamondbattle/que/${nftId}`, {nftId, date, userId, uri})
+  await service.db.write(`diamondbattle/que/${userId}/${nftId}`, queObj)
   const res = await service.diamondbattler.checkQue()
-  return {res, nftId, date}
+  return {nftId, obj: queObj}
 }
 
-const findEnemy = (item, ar) => ar.find(i => item.userId !== i.userId)
+const initPlayer = (que, i) => {
+  const users = Object.keys(que)
+  const userId = users[i]
+  const dbAr = Object.keys(que[userId])
+  const nftId = dbAr[0]
+  return {nftId, userId, ...que[userId][nftId]}
+}
 
 service.diamondbattler.checkQue = async () => {
   //check que
   let que = await service.db.read(`diamondbattle/que`)
   if(!que) return {msg: "No compatible battles available.", queLength: 0}
-  que = Object.values(que)
+  let queLength = Object.values(que)
+  if(queLength.length < 2) return {msg: "No compatible battles available.", queLength}
   //find enemies
-  let enemy, battleReady 
-    = que.find(i => enemy = findEnemy(i, que))
+  let battleReady = initPlayer(que, 0)
+  let enemy = initPlayer(que, 1)
   //init enemies
   if(battleReady && enemy){
     console.log('battle ready', battleReady, enemy)
@@ -66,6 +79,11 @@ service.diamondbattler.checkQue = async () => {
       db.address = new sw3.PublicKey(i.nftId)
       return db
     }))
+    //sort players [battleReady, enemy]
+    if(players[0].address.toString() !== battleReady.nftId) players = [
+      players[1],
+      players[0]
+    ]
     //battle
     const battle = service.battler.battle(...players)
     let winner = battle.players[0].hp === 0 ? battleReady : enemy
@@ -73,10 +91,31 @@ service.diamondbattler.checkQue = async () => {
     //save battle on server
     const battleId = await service.db.push(`diamondbattle/report`, battle)
     const date = (new Date()).toUTCString()
-    await service.db.write(`diamondbattle/history/db/${battleReady.nftId}/${battleId}`, date)
-    await service.db.write(`diamondbattle/history/db/${enemy.nftId}/${battleId}`, date)
-    await service.db.write(`diamondbattle/history/u/${battleReady.userId}/${battleId}`, date)
-    await service.db.write(`diamondbattle/history/u/${enemy.userId}/${battleId}`, date)
+
+    const thumbnail = i => {
+      return {
+        user: {
+          pubkey: i?battleReady.userId:enemy.userId,
+          db: i?battleReady.nftId:enemy.nftId,
+          image: battle.players[i].info.image
+        },
+        enemy: {
+          pubkey: i?enemy.userId:battleReady.userId,
+          db: i?enemy.nftId:battleReady.nftId,
+          image: battle.players[i?0:1].info.image
+        },
+        date,
+        rounds: battle.reports.length,
+        winner: winner.userId
+      }
+    }
+    
+    await service.db.write(`diamondbattle/que/${battleReady.userId}/${battleReady.nftId}`, null)
+    await service.db.write(`diamondbattle/que/${enemy.userId}/${enemy.nftId}`, null)
+    await service.db.write(`diamondbattle/history/db/${battleReady.nftId}/${battleId}`, thumbnail(0))
+    await service.db.write(`diamondbattle/history/db/${enemy.nftId}/${battleId}`, thumbnail(1))
+    await service.db.write(`diamondbattle/history/u/${battleReady.userId}/${battleId}`, thumbnail(0))
+    await service.db.write(`diamondbattle/history/u/${enemy.userId}/${battleId}`, thumbnail(1))
     //send dbs to winner
     console.log('sending 1/2', battleReady.nftId)
     await service.nft.sendToken(battleReady.nftId, winner.userId)
@@ -89,5 +128,6 @@ service.diamondbattler.checkQue = async () => {
     return {msg: "No compatible battles available.", queLength: que.length}
   }
 }
+service.diamondbattler.checkQue()
 
 module.exports = service.diamondbattler

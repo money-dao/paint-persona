@@ -3,7 +3,7 @@ const event = require('../service/event.js')
 const data = require('../service/data.js')
 const http = require('../service/http.js')
 const w3 = require('../service/w3.js')
-const battler = require('../service/diamondbattler.js')
+const battler = require('../service/diamondbattler-play.js')
 const splToken = require("@solana/spl-token")
 
 const battle = () => {
@@ -12,16 +12,7 @@ const battle = () => {
 
   const nfts = data`nfts`()
 
-  const refresh = async () => {
-    if(nfts){
-      console.log('battle nfts', nfts)
-      window.battler = battler
-      window.testBattle = () => battler.battle(nfts.diamonds[0], nfts.diamonds[1])
-    }
-  }
-  event.fn(refresh)
-
-  let test = []
+  let tx_processing;
 
   const dbcard = db => {
     const stats = battler.toStats(db)
@@ -36,7 +27,7 @@ const battle = () => {
       document.querySelector(`#${statsTab}`).classList.remove('hide')
       document.querySelector(`#${traitsTab}`).classList.add('hide')
     })
-
+    
     const battleId = event.click(el => {
       // test.push(db)
       // if(test.length === 2) {
@@ -78,7 +69,14 @@ const battle = () => {
   }
 
   const confirmBattleModal = db => {
+    const close = () => {
+      event.dispatch`modal`(`#confirmbattle`, {on: false})
+      const modal = document.querySelector(`#confirmbattle`)
+      modal.parentElement.removeChild(modal)
+    }
+    
     const playId = event.click(async () => {
+      tx_processing = event.append(document.body, el.tx_processing())[0]
       //tx - nft, 0.003 SOL
       let signature
       try {
@@ -90,16 +88,18 @@ const battle = () => {
           userId: pubkey.toString()
         })
         console.log('res', res)
+        let que = data`que`()
+        if(!que) que = {}
+        que[res.nftId] = res.obj
+        data`que`(que)
+        // location.reload()
       } catch (err) {
         console.error(err)
+        document.body.removeChild(tx_processing)
         return null
       }
     })
-    const closeId = event.click(() => {
-      event.dispatch`modal`(`#confirmbattle`, {on: false})
-      const modal = document.querySelector(`#confirmbattle`)
-      modal.parentElement.removeChild(modal)
-    })
+    const closeId = event.click(() => close())
     const initId = event.el(async el => {
       const ata = await w3.ppATA(db.address)
       const res = await w3.check_nft_account(ata)
@@ -130,28 +130,22 @@ const battle = () => {
       el.innerHTML = dbcard(e.detail)
     )
 
-    if(nfts.diamonds) el.innerHTML = dbcard(nfts.diamonds[0])
+    if(nfts.diamonds.length) el.innerHTML = dbcard(nfts.diamonds[0])
   })
   
   const route = el.route(
-    el.row(`
-      <div class="center">
-        <button class="waves-effect waves-light btn disabled">Battle</button>
-        <button class="waves-effect waves-light btn">History</button>
-        <button class="waves-effect waves-light btn">Search</button>
-      </div>
-    `),
+    el.battle_nav('battle'),
     el.row(
-      `<div id="${selectedDBId}"></div>`
-    ),
-    el.row(
-      `<div class="center">`
+      `<div class="center db-inv">`
       + nfts.diamonds.map(db => {
         const selectId = event.click(() => event.dispatch`dbselect`(`#${selectedDBId}`, db))
-        return `<button id="${selectId}" class="waves-effect waves-light btn-flat" style="height: 90px"><img src="${db.image}" width="90"></button>`
+        return `<button id="${selectId}" class="waves-effect waves-light btn-flat" style="height: 90px"><img class="z-depth-1 circle" src="${db.image}" width="90"></button>`
       }).join('') +
       `</div>`
     ),
+    el.row(
+      `<div id="${selectedDBId}"></div>`
+    )
   )
   
   return el.nav(route, true, false)

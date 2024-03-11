@@ -2,7 +2,7 @@ const el = require('../el/_el.js')
 const event = require('../service/event.js')
 const data = require('../service/data.js')
 const http = require('../service/http.js')
-const battler = require('../service/diamondbattler.js')
+const battler = require('../service/diamondbattler-play.js')
 
 const watch = () => {
   // const pubkey = data`pubkey`()
@@ -13,17 +13,16 @@ const watch = () => {
     const id = location.search.substring(4)
     if(id.substring(0,1) == '-'){
       console.log('id', id)
-      http.post('hostReport', {id}).then(
-        res => {
-          console.log('res', res)
-          watch = data`watch`(res)
-          location.hash = '#'
-          setTimeout(() => location.hash = '#watch',0)
-        },
-        er => locaiton.hash = '#battle'
-      )
-    }
+      ;(async () => {
+        const res = await http.post('hostReport', {id})
+        if(!res || res.error) location.hash = `#battle`
+        console.log('res', res)
+        watch = data`watch`(res)
+        location.hash = '#'
+        setTimeout(() => location.hash = '#watch',0)
+      })();
       return ''
+    }
   } else {
     watch = data`watch`()
     if(!watch) location.hash = '#battle'
@@ -229,7 +228,7 @@ const watch = () => {
     )
   )
   
-  const ui = () => el.nav(route, true, true)
+  const ui = () => el.nav(route, true, false)
   
   return ui()
 }
